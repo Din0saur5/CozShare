@@ -59,3 +59,21 @@
         .animate-slideUp {
           animation: slideUp .7s ease-out forwards;
         }
+
+        @keyframes pulsate {
+          0% {
+            transform: scale(1); /* Start at natural size */
+          }
+          50% {
+            transform: scale(1.5); /* Scale up to 1.5 times the original size */
+          }
+          100% {
+            transform: scale(1); /* Return to natural size */
+          }
+        }
+        .pulsate {
+          animation: pulsate 2s infinite ease-in-out;
+        }
+        .pulsate:hover {
+          animation: none;
+        }

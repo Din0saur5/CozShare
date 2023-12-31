@@ -4,7 +4,8 @@
 import { HashLink } from 'react-router-hash-link';
 import SignupForm from '../components/SignupForm';
 import LoginForm from '../components/LoginForm';
-    
+import AOS from 'aos';
+import 'aos/dist/aos.css';
 
 
 //darkmode light mode top right corner use icons
@@ -15,10 +16,16 @@ import LoginForm from '../components/LoginForm';
     const Home = () => {
       const [signLog, setSignLog] = useState(false)
       const [showLogin, setShowLogin] = useState(true)
-const openSignLog = () => {
-  setSignLog(true)
-  document.getElementById('sign-log').showModal();
-}
+      const openSignLog = () => {
+        setSignLog(true)
+        document.getElementById('sign-log').showModal();
+      }
+      AOS.init({
+        once: true, // whether animation should happen only once - while scrolling down
+        useClassNames: true, // if true, will add content of `data-aos` as classes on scroll
+        initClassName: false, // disable initialization classes
+        animatedClassName: 'animated', // class applied on animation
+      });
 
 
 
@@ -59,30 +66,42 @@ Welcome to the realm of imagination and endless possibilities! 🚀</p>
           </div>
           <div  className='h-screen'>
 
-          <div id='about' className="bg-base">
+          <div id='about' className="bg-base overflow-x-clip overflow-hidden">
+            <div data-aos="fade-right" data-aos-duration="800" >
             <span  className='text-6xl pl-3 leading-loose'>Imagine!</span>
-            <p className='leading-8 px-8 pb-5'>&emsp;Cosplay, an art form that transcends boundaries and eras, invites everyone to explore worlds beyond imagination. From its humble beginnings to its global explosion, cosplay has always been about expression, creativity, and most importantly, inclusivity. Whether you&apos;re channeling your inner ninja or embodying a knight from tales of old, the essence of cosplay is bound only by the limits of your imagination. CozShare celebrates this art, offering a canvas where every stitch, color, and character comes to life, reminding us that in the universe of cosplay, you&apos;re only as limited as your dreams.
-            </p>
+            </div>
+            <div data-aos="fade-left"
+                  data-aos-duration="1200">
+            <p   className='leading-8 px-8 pb-5'>&emsp;Cosplay, an art form that transcends boundaries and eras, invites everyone to explore worlds beyond imagination. From its humble beginnings to its global explosion, cosplay has always been about expression, creativity, and most importantly, inclusivity. Whether you&apos;re channeling your inner ninja or embodying a knight from tales of old, the essence of cosplay is bound only by the limits of your imagination. CozShare celebrates this art, offering a canvas where every stitch, color, and character comes to life, reminding us that in the universe of cosplay, you&apos;re only as limited as your dreams.
+            </p></div>
           </div>
           <div className=" h-3/4 bg-imagineWiz bg-fixed bg-bottom bg-no-repeat bg-cover"></div>
 
 
-          <div className="bg-base">
+          <div  className="bg-base overflow-x-clip overflow-hidden">
+          <div data-aos="fade-down-right" data-aos-duration="1200" >
           <span  className='text-6xl pl-3 leading-loose'>Connect!</span>
+          </div>
+            <div data-aos="fade-up-left"
+                  data-aos-duration="1800">
             <p className='leading-8 px-8 pb-5'>&emsp;At its core, cosplay thrives on community. It&apos;s not just about crafting a costume; it&apos;s about the connections made and the shared passion for bringing fantasies to life. CozShare aims to be more than just a platform; it&apos;s a meeting ground for creativity, where artists and enthusiasts alike can share, credit, and draw inspiration from each other. By fostering a network of support and idea exchange, we&apos;re not just sharing costumes; we&apos;re weaving a tapestry of friendships and collaborative artistry. Join us in creating a space where every cosplayer, from beginners to veterans, can connect and grow together.
-            </p>
+            </p></div>
           </div>
           <div className=" h-3/4 bg-elfgirl bg-fixed bg-top bg-no-repeat bg-cover"></div>
 
 
-          <div className="bg-base ">
+          <div  className="bg-base overflow-x-clip overflow-hidden">
+          <div data-aos="fade-down" data-aos-duration="1100" >
             <span  className='text-6xl pl-3 leading-loose'>Create!</span>
+            </div>
+            <div data-aos="fade-up"
+                  data-aos-duration="800">
             <p className='leading-8 px-8 pb-5'>&emsp;The world of cosplay is as diverse in its materials as it is in its characters. Foam, leather, paint, electronics, 3D printing, wood – the list goes on. CozShare isn&apos;t just a showcase; it&apos;s a hub of creation and inspiration. Our goal is to connect cosplayers globally, allowing you to buy, sell, and be inspired. Share your costume photos and videos, instructional content, discuss events, and explore prop and costume tutorials. Patterns, downloadable resources, and artist shop links are just a click away. CozShare is more than a platform; it&apos;s a community that echoes the mantra: "Let&apso;s all work together to keep a community that creates!"</p>
-         
+            </div>
           </div>
 
           <div className=" h-3/4  bg-workspace bg-fixed bg-center bg-no-repeat bg-cover">
-            <button onClick={()=>openSignLog()} className='btn btn-accent relative flex mx-auto top-3/4 hover:scale-125 lg:scale-125 lg:hover:scale-200'>Interested?</button>
+            <button onClick={()=>openSignLog()} className=' pulsate  btn btn-accent relative flex mx-auto top-3/4 lg:scale-125 lg:hover:scale-200'>Interested?</button>
           </div>
 
           </div>
