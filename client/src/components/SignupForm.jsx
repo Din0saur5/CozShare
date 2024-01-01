@@ -26,9 +26,10 @@ const validationSchema = Yup.object({
 });
 
 const SignupForm = () => {
+  const server = import.meta.env.VITE_URL
   const navigate = useNavigate();
   const checkDisplayNameExists = (displayName) => {
-    const url = `/api/check_user/${displayName}`; // Replace with your actual server URL
+    const url = `${server}/check_user/${displayName}`; // Replace with your actual server URL
 
     return fetch(url, {
       method: 'GET',
@@ -54,7 +55,7 @@ const SignupForm = () => {
   };
 
   function signup(email, displayName, password) {
-    const url = '/api/signup'; // Change to your actual server URL
+    const url = `${server}/signup`; // Change to your actual server URL
     const data = {
       email: email,
       display_name: displayName,
@@ -69,11 +70,12 @@ const SignupForm = () => {
       body: JSON.stringify(data),
       credentials: 'include' // if you're handling sessions
     })
-    .then(response => response.json())
-    .then(() => {
-      
+    .then(response =>{ if(response.ok){
       navigate('/dashboard')
-    })
+    }})
+    
+      
+    
     .catch((error) => {
       console.error('Error:', error);
     });

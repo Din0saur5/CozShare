@@ -14,7 +14,8 @@ import AppLayout from "./components/AppLayout";
 
 
 async function fetchData() {
-  const response = await fetch("/api/check_session");
+  const server = import.meta.env.VITE_URL
+  const response = await fetch(`${server}/check_session`);
   if (response.ok) {
     const data = await response.json();
     return data

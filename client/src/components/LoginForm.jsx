@@ -4,38 +4,39 @@ import * as Yup from 'yup';
 import { useNavigate } from 'react-router-dom';
 
 // Placeholder backend validation functions
-const checkUsernameExists = async (username) => {
-  // Replace this with your actual API call to check if the username exists
+const checkemailExists = async (email) => {
+  // Replace this with your actual API call to check if the email exists
   return true;
 };
 
-const isPasswordValid = async (username, password) => {
+const isPasswordValid = async (email, password) => {
   // Replace this with your actual API call to validate the password
   return true;
 };
 
 const validationSchema = Yup.object({
-  username: Yup.string()
+  email: Yup.string()
     .required('Required')
     .test(
-      'checkUsername',
-      'Username does not exist',
-      async (value) => await checkUsernameExists(value)
+      'checkemail',
+      'email does not exist',
+      async (value) => await checkemailExists(value)
     ),
   password: Yup.string()
     .required('Required')
     .test(
       'checkPassword',
       'Invalid password',
-      async (password, { parent }) => await isPasswordValid(parent.username, password)
+      async (password, { parent }) => await isPasswordValid(parent.email, password)
     ),
 });
 
 const LoginForm = () => {
+  const server = import.meta.env.VITE_URL
   const navigate = useNavigate()
 
     const handleSubmit = (values, { setSubmitting }) => {
-      const url = '/api/login'; // Change this URL to your actual server endpoint
+      const url = `${server}/login`; // Change this URL to your actual server endpoint
   
       fetch(url, {
         method: 'POST',
@@ -43,15 +44,16 @@ const LoginForm = () => {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          email: values.username, // Make sure this matches with your backend expected field
+          email: values.email, // Make sure this matches with your backend expected field
           password: values.password
         }),
         credentials: 'include' // if you're handling sessions
       })
-      .then(response => response.json())
-      .then(() => {
-        
+      .then(response => { if(response.ok){
         navigate('/dashboard')
+        } else{
+          throw new Error("HTTP error " + response.status)
+        }
       })
       .catch((error) => {
         console.error('Login Error:', error);
@@ -65,7 +67,7 @@ const LoginForm = () => {
   return (
     <Formik
       initialValues={{
-        username: '',
+        email: '',
         password: ''
       }}
       validationSchema={validationSchema}
@@ -74,16 +76,16 @@ const LoginForm = () => {
       {({ errors, touched }) => (
         <Form className="space-y-4">
           <div>
-            <label htmlFor="username" className="block">
-              Username
-              {errors.username && touched.username && (
-                <span className="label-text-alt pl-8 text-red-500"> - {errors.username}</span>
+            <label htmlFor="email" className="block">
+              Email
+              {errors.email && touched.email && (
+                <span className="label-text-alt pl-8 text-red-500"> - {errors.email}</span>
               )}
             </label>
             <Field
-              name="username"
-              type="text"
-              className={`mt-1 block w-full ${errors.username && touched.username ? 'outline-red-500' : 'outline-green-500'}`}
+              name="email"
+              type="email"
+              className={`mt-1 block w-full ${errors.email && touched.email ? 'outline-red-500' : 'outline-green-500'}`}
             />
           </div>
 

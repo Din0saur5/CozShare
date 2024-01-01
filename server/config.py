@@ -10,7 +10,12 @@ from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import MetaData
 import secrets
 from flask_cors import CORS
-app = Flask(__name__)
+app = Flask(
+    __name__,
+    static_folder='../client/dist/static',
+    template_folder='../client/dist'
+    
+    )
 app.secret_key = os.getenv('SECRET_KEY')
 app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('SUPABASE_URI')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False

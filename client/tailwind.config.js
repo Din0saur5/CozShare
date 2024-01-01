@@ -8,7 +8,7 @@ export default {
         'elfgirl': "url('/images/elfgirl.jpeg')",
         'imagineWiz':"url('/images/imagineWiz.png')",
         'workspace': "url('/images/workspace.jpeg')",
-        'yell': "url('/images/yell.jpeg')"
+        'yell': "url('https://mgofmfewguhdxnissjvz.supabase.co/storage/v1/object/public/home-images/yell.jpeg?t=2024-01-01T18%3A38%3A30.819Z')"
       },
       height: {
        '4/5': "80vh",

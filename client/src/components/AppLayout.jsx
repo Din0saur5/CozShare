@@ -16,12 +16,13 @@ const AppLayout = () =>{
   const [userData, setUserData] = useState(null)
   useEffect(()=>{
     setUserData(data) 
-  },[])
-
-
-  if (userData === null){
+    
+    if (userData === null){
     navigate('/')
-  }
+    }
+  },[data, navigate, userData])
+
+
     
   
 

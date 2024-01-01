@@ -1,20 +1,24 @@
 
-from flask import request, session
+from flask import Flask, request, session, render_template, make_response
 from flask_restful import Resource
 from config import app, db, api
 from models import User
 from sqlalchemy.exc import IntegrityError
 @app.route('/')
-def index():
-  return '<h1>Server Home</h1>'
-
+@app.route('/<int:id>')
+def index(id=0):
+    return render_template("index.html")
 
 @app.before_request
 def check_if_logged_in():
-    if not session.get('user_id') and request.endpoint not in {'check_session', 'login', 'signup', 'check_user'}:
-        return {'error': 'Unauthorized'}, 401
+    if not session.get('user_id') and request.endpoint in {'/users',}:
+        return {'error': 'Unauthorized blah'}, 401
 
-
+class AllUsers(Resource):
+  def get(self):
+    users = User.query.all()
+    rb= [user.to_dict() for user in users] 
+    return make_response(rb, 200)
 
 class Signup(Resource):
   def post(self):
@@ -71,6 +75,7 @@ class Logout(Resource):
         return {}, 204
     return {'error': 'Unauthorized'}, 401
 
+api.add_resource(AllUsers, '/users', endpoint='users')
 api.add_resource(Signup, '/signup', endpoint='signup')
 api.add_resource(CheckDisplayName, '/check_user/<display_name>', endpoint='check_user')
 api.add_resource(CheckSession, '/check_session', endpoint='check_session')
