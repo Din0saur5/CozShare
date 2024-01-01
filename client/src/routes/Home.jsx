@@ -6,6 +6,7 @@ import SignupForm from '../components/SignupForm';
 import LoginForm from '../components/LoginForm';
 import AOS from 'aos';
 import 'aos/dist/aos.css';
+import { useOutletContext } from 'react-router-dom';
 
 
 //darkmode light mode top right corner use icons
@@ -14,7 +15,8 @@ import 'aos/dist/aos.css';
 
 
     const Home = () => {
-      const [signLog, setSignLog] = useState(false)
+      
+      const [signLog, setSignLog] = useState(true)
       const [showLogin, setShowLogin] = useState(true)
       const openSignLog = () => {
         setSignLog(true)
@@ -121,7 +123,7 @@ Welcome to the realm of imagination and endless possibilities! 🚀</p>
                   ):(
 
                     <>
-                    <LoginForm/>
+                    <LoginForm />
                     <small >Don&apos;t have an account? <span className='text-blue-400 cursor-pointer' onClick={()=>setShowLogin(true)} to ='/signup'>Sign Up</span></small>
                     </>
                   )

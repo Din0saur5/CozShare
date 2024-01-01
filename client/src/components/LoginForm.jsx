@@ -1,6 +1,7 @@
 import React from 'react';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
+import { useNavigate } from 'react-router-dom';
 
 // Placeholder backend validation functions
 const checkUsernameExists = async (username) => {
@@ -31,6 +32,36 @@ const validationSchema = Yup.object({
 });
 
 const LoginForm = () => {
+  const navigate = useNavigate()
+
+    const handleSubmit = (values, { setSubmitting }) => {
+      const url = '/api/login'; // Change this URL to your actual server endpoint
+  
+      fetch(url, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          email: values.username, // Make sure this matches with your backend expected field
+          password: values.password
+        }),
+        credentials: 'include' // if you're handling sessions
+      })
+      .then(response => response.json())
+      .then(() => {
+        
+        navigate('/dashboard')
+      })
+      .catch((error) => {
+        console.error('Login Error:', error);
+        // Handle login error here (e.g., show error message)
+      })
+      .finally(() => {
+        setSubmitting(false); // Stop the submission process
+      });
+    };
+  
   return (
     <Formik
       initialValues={{
@@ -38,12 +69,7 @@ const LoginForm = () => {
         password: ''
       }}
       validationSchema={validationSchema}
-      onSubmit={(values, { setSubmitting }) => {
-        setTimeout(() => {
-          alert(JSON.stringify(values, null, 2));
-          setSubmitting(false);
-        }, 400);
-      }}
+      onSubmit={handleSubmit}
     >
       {({ errors, touched }) => (
         <Form className="space-y-4">

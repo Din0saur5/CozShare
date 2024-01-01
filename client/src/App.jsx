@@ -1,50 +1,49 @@
 
-      import * as React from "react";
-      import { createRoot } from "react-dom/client";
-      import {
+import * as React from "react";
+import { createRoot } from "react-dom/client";
+import {
         createBrowserRouter,
-        RouterProvider
+        RouterProvider,
+        
       } from "react-router-dom";
-      import Home from "./routes/Home";
-      import Navbar from "./components/Navbar";
-      import { Outlet } from "react-router-dom";
-      import ErrorPage from "./routes/ErrorPage";
-      import "./App.css"
+import Home from "./routes/Home";
+import ErrorPage from "./routes/ErrorPage";
+import Dashboard from "./routes/Dashboard";
+import AppLayout from "./components/AppLayout";
       
-      const AppLayout = () =>{
-      
-        return(
-          <>
-          <Navbar/>
-          <Outlet/>
-          </>
-        )
-      }
+
+
+async function fetchData() {
+  const response = await fetch("/api/check_session");
+  if (response.ok) {
+    const data = await response.json();
+    return data
+  } else{
+  return null
+}}
+    
+  
+
+  
+
 
       const router = createBrowserRouter([
-        // pre-login
-        { 
-          path: "/",
+        {
          
+          element: <AppLayout/>, 
+          loader: fetchData,
         errorElement: <ErrorPage/>,
           children:[
             {
               path: "/",
-              element: <Home/>
+              element: <Home/> //set up context and on sign up or login set the context and session storage
+            },
+            {
+              path: "/dashboard",
+              element: <Dashboard/>
             }
           ]
-        } // post-login
-        // ,{
-        //   path: "/app",
-        //   element: <AppLayout/>,
-        // errorElement: <ErrorPage/>,
-        //   children:[
-        //     {
-        //       path: "/app",
-        //       element: <Home/>
-        //     }
-        //   ]
-        // }
+        }
         
         
       

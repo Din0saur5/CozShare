@@ -1,26 +1,19 @@
 import React from 'react';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
+import { useNavigate } from 'react-router-dom';
 
 // Mock function to check if display name exists
 // Replace this with your actual backend call
-const checkDisplayNameExists = async (displayName) => {
-  // API call to check if display name exists
-  // For now, just a placeholder
-  return false; 
-};
+
+
 
 const validationSchema = Yup.object({
   email: Yup.string()
     .email('Invalid email address')
     .required('Required'),
   displayName: Yup.string()
-    .required('Required')
-    .test(
-      'checkDuplDisplayName',
-      'Display name already taken',
-      async (value) => !await checkDisplayNameExists(value)
-    ),
+  .required('Required'),
   password: Yup.string()
     .required('Required')
     .matches(
@@ -33,6 +26,62 @@ const validationSchema = Yup.object({
 });
 
 const SignupForm = () => {
+  const navigate = useNavigate();
+  const checkDisplayNameExists = (displayName) => {
+    const url = `/api/check_user/${displayName}`; // Replace with your actual server URL
+
+    return fetch(url, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      credentials: 'include' // If you're handling sessions
+    })
+    .then(response => {
+      if (response.ok) {
+        // If the response is ok (status 200), then the display name is available
+        return false;
+      } else if (response.status === 409) {
+        // If the response status is 409, the display name already exists
+        return true;
+      }
+      throw new Error(`Server responded with status: ${response.status}`);
+    })
+    .catch(error => {
+      console.error('Error:', error);
+      throw error; // Rethrow or handle error appropriately
+    });
+  };
+
+  function signup(email, displayName, password) {
+    const url = '/api/signup'; // Change to your actual server URL
+    const data = {
+      email: email,
+      display_name: displayName,
+      password: password
+    };
+  
+    return fetch(url, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(data),
+      credentials: 'include' // if you're handling sessions
+    })
+    .then(response => response.json())
+    .then(() => {
+      
+      navigate('/dashboard')
+    })
+    .catch((error) => {
+      console.error('Error:', error);
+    });
+  }
+
+
+
+
   return (
     <Formik
       initialValues={{
@@ -42,11 +91,23 @@ const SignupForm = () => {
         confirmPassword: ''
       }}
       validationSchema={validationSchema}
-      onSubmit={(values, { setSubmitting }) => {
-        setTimeout(() => {
-          alert(JSON.stringify(values, null, 2));
-          setSubmitting(false);
-        }, 400);
+      onSubmit={async (values, { setSubmitting,  setFieldError  }) => {
+
+        try {
+          const displayNameExists = await checkDisplayNameExists(values.displayName);
+          if (displayNameExists) {
+            setFieldError('displayName', 'Display name already taken');
+            return;
+          }else{
+            signup(values.email, values.displayName, values.password)
+          }
+        } catch (error) {
+          console.error('Submission error:', error);
+          // Handle other submission errors
+        }
+        
+        setSubmitting(false); // Stop the submission process (hide loading indicators, etc.)
+        
       }}
     >
       {({ errors, touched }) => (
