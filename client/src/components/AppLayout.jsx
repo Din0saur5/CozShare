@@ -11,13 +11,14 @@ import "../App.css"
 
 const AppLayout = () =>{
   const navigate = useNavigate();
-  const data = useLoaderData(); 
+  let data = null
+  data = useLoaderData(); 
   console.log(data)
-  const [userData, setUserData] = useState(null)
+  const [userData, setUserData] = useState(data)
   useEffect(()=>{
     setUserData(data) 
-    
-    if (userData === null){
+    console.log(userData)
+    if (data === null){
     navigate('/')
     }
   },[data, navigate, userData])
@@ -35,13 +36,3 @@ const AppLayout = () =>{
 }
 export default AppLayout;
 
-
-//when needed this is logout fn
-// function logout() {
-//     setUserData(null);
-//     fetch("/api/logout", {
-//       method: "DELETE",
-//     });
-//     navigate("/");
-//   }
-      

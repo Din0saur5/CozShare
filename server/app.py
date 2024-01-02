@@ -74,7 +74,123 @@ class Logout(Resource):
         session['user_id'] = None
         return {}, 204
     return {'error': 'Unauthorized'}, 401
+  
+  
+class UserById(Resource):
+  def get(self, id):
+    u = User.query.filter(User.id == id).first()
+    if u:
+        
+        rb = u.to_dict()
+        return make_response(rb, 200)    
+    else:
+        rb = {
+            "error": "User not found"
+        }
+        return make_response(rb, 404)
+  
+  def patch(self,id):
+    u = User.query.filter(User.id == id ).first()
+    if u:
+        try:
+            for attr in request.json:
+                setattr(u, attr, request.json.get(attr))
+                db.session.commit()
+                rb = u.to_dict()
+            return make_response(rb, 202)
+        except ValueError:
+            rb = {
+            "errors": ["validation errors"]
+            }
+            return make_response(rb, 400)
+    else:
+        rb ={
+        "error": "Scientist not found"
+        }
+        return make_response(rb, 404)
+  
+  def delete(self, id):
+    u = User.query.filter(User.id == id).first() 
+    if u:
+        db.session.delete(u)
+        db.session.commit()
+        return make_response({}, 204)
+    else:
+        rb = {
+            "error": "User not found"
+        }
+        return make_response(rb, 404)
+      
+class GetFollowers(Resource):
+  def get(self, id):
+    
+    user = User.query.filter(User.id == id).first() 
+    if not user:
+      return {'error': 'User not found'}, 404
 
+      # Assuming 'followers' is a list of user IDs
+    followers_list = user.followers
+
+      # Query for all users whose IDs are in the followers list
+    followers = User.query.filter(User.id.in_(followers_list)).all()
+      
+      # Serialize the follower data
+    rb= [f.to_dict(only=('id', 'profile_pic','display_name')) for f in followers] 
+      
+    return make_response(rb, 200)
+  
+class GetFollowing(Resource):
+  def get(self, id):
+    
+    user = User.query.filter(User.id == id).first()
+    if not user:
+      return {'error': 'User not found'}, 404
+
+      # Assuming 'followers' is a list of user IDs
+    following_list = user.following
+
+      # Query for all users whose IDs are in the followers list
+    following = User.query.filter(User.id.in_(following_list)).all()
+      
+      # Serialize the follower data
+    rb= [f.to_dict(only=('id', 'profile_pic','display_name')) for f in following] 
+      
+    return make_response(rb, 200)
+
+class GetFollows(Resource):
+  def get(self, id):
+    
+    user = User.query.filter(User.id == id).first()
+    if not user:
+      return {'error': 'User not found'}, 404
+
+    
+    following_list = user.following
+    
+    followers_list = user.followers
+    rb1 = []
+    rb2 = []
+    if following_list:
+      following = User.query.filter(User.id.in_(following_list)).all()
+      rb1= [f.to_dict(only=('id', 'profile_pic','display_name')) for f in following] 
+    
+    if followers_list:
+      followers = User.query.filter(User.id.in_(followers_list)).all()  
+      rb2 = [f.to_dict(only=('id', 'profile_pic','display_name')) for f in followers]  
+      # Serialize the follower data
+    unique_dicts = {}
+    for d in rb1 + rb2:
+    # Assuming 'id' is a unique key
+      unique_dicts[d['id']] = d
+
+    deduped_combined = list(unique_dicts.values())
+    
+    return make_response( deduped_combined, 200)
+  
+api.add_resource(GetFollows, '/follows/<uuid:id>')
+api.add_resource(GetFollowing, '/following/<uuid:id>')  
+api.add_resource(GetFollowers, '/followers/<uuid:id>')
+api.add_resource(UserById, '/users/<uuid:id>')
 api.add_resource(AllUsers, '/users', endpoint='users')
 api.add_resource(Signup, '/signup', endpoint='signup')
 api.add_resource(CheckDisplayName, '/check_user/<display_name>', endpoint='check_user')

@@ -77,3 +77,26 @@
         .pulsate:hover {
           animation: none;
         }
+        @keyframes rotateForward {
+          from {
+            transform: rotate(-90deg);
+          }
+          to {
+            transform: rotate(0deg);
+          }
+        }
+        @keyframes rotateBack {
+          from {
+            transform: rotate(90deg);
+          }
+          to {
+            transform: rotate(0deg);
+          }
+        }
+        
+        .rotate-forward {
+          animation: rotateForward 100ms forwards ease-in-out;
+        }
+        .rotate-back{
+          animation: rotateBack 100ms forwards ease-in-out;
+        }

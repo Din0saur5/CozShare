@@ -3,6 +3,7 @@ import * as React from "react";
 import { createRoot } from "react-dom/client";
 import {
         createBrowserRouter,
+        redirect,
         RouterProvider,
         
       } from "react-router-dom";
@@ -30,7 +31,7 @@ async function fetchData() {
 
       const router = createBrowserRouter([
         {
-         
+          path: "/",
           element: <AppLayout/>, 
           loader: fetchData,
         errorElement: <ErrorPage/>,
@@ -41,7 +42,8 @@ async function fetchData() {
             },
             {
               path: "/dashboard",
-              element: <Dashboard/>
+              element: <Dashboard/>,
+              loader: fetchData,
             }
           ]
         }
