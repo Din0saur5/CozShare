@@ -81,7 +81,6 @@ const Sidebar = ({userData, setUserData}) => {
         
     },[])
 
-    console.log(allFollows)
 
     function logout() {
         setUserData(null);
@@ -107,7 +106,7 @@ const Sidebar = ({userData, setUserData}) => {
 
   return (
     <>
-    <div className="drawer lg:drawer-open">
+    <div className="drawer lg:drawer-open relative z-10 w-20 -ml-20 lg:ml-0">
         <input id="my-drawer-2" type="checkbox" className="drawer-toggle" />
         
         <div className="drawer-side">
@@ -132,19 +131,21 @@ const Sidebar = ({userData, setUserData}) => {
         </div>
             {/* Sidebar content here */}
             <SearchBar follows = {allFollows}/>
-            <li className='text-primary hover:bg-primary hover:text-secondary rounded-2xl'><Link to='/dashboard'>Explore</Link></li>
-            <li className='text-primary hover:bg-primary hover:text-secondary rounded-2xl'><Link>Your Profile</Link></li>
-            <li className='text-primary hover:bg-primary hover:text-secondary rounded-2xl'><Link>Inspiring:  {followers? followers.length:'0'}</Link></li>
-            <li className='text-primary hover:bg-primary hover:text-secondary rounded-2xl'><Link>Inspired by:  {following? following.length:'0'}</Link></li>
+            <li className=' hidden sm:block text-primary hover:bg-primary hover:text-secondary rounded-2xl'><Link to='/dashboard'>Explore</Link></li>
+            <li className=' visible sm:hidden text-primary hover:bg-primary hover:text-secondary rounded-2xl'><Link to='/dashboard'>Events</Link></li>
+            <li className='hidden sm:block text-primary hover:bg-primary hover:text-secondary rounded-2xl'><Link to='/profile'>Your Profile</Link></li>
+            <li className='visible sm:hidden text-primary hover:bg-primary hover:text-secondary rounded-2xl'><div>Create Post</div></li>
+            <li className='text-primary hover:bg-primary hover:text-secondary rounded-2xl'><Link to='/followers'>Inspiring:  {followers? followers.length:'0'}</Link></li>
+            <li className='text-primary hover:bg-primary hover:text-secondary rounded-2xl'><Link to='/following'>Inspired by:  {following? following.length:'0'}</Link></li>
             <div className="divider"></div>
-            <li className='text-primary hover:bg-primary hover:text-secondary rounded-2xl'><Link>Settings</Link></li>
+            <li className='text-primary hover:bg-primary hover:text-secondary rounded-2xl'><Link to='/settings'>Settings</Link></li>
             <li className='text-primary hover:bg-primary hover:text-secondary rounded-2xl'><div onClick={logout} >Log-out</div></li>
             </ul>
         
         </div>
     </div>
     
-    <div className="btm-nav lg:hidden">
+    <div style={{zIndex:'11'}}  className="btm-nav lg:hidden">
     
    
   
@@ -163,7 +164,7 @@ const Sidebar = ({userData, setUserData}) => {
         
         </div> 
 
-  <button onClick={()=>{navigate('/')}} className="text-primary">
+  <button onClick={()=>{navigate('/profile')}} className="text-primary">
     <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" /></svg>
   </button>
   <button onClick={()=>{navigate('/dashboard')}} className="text-primary">

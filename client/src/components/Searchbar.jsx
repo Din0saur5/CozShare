@@ -1,7 +1,9 @@
 /* eslint-disable react/prop-types */
 import React, { useState } from 'react'
+import { useNavigate } from 'react-router-dom';
 
 function SearchBar({follows}) {
+  const navigate = useNavigate()
     const [searchVal, setSearchVal] = useState('');
     const [suggestions, setSuggestions] = useState([]);
 
@@ -22,7 +24,7 @@ function SearchBar({follows}) {
   };
 
   const handleSuggestionClick = (suggestion) => {
-    setSearchVal(suggestion)
+    navigate(`/profile/${suggestion.id}`)
     setSuggestions([]);
 
   };

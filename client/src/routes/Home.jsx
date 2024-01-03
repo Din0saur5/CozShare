@@ -98,7 +98,7 @@ Welcome to the realm of imagination and endless possibilities! 🚀</p>
             </div>
             <div data-aos="fade-up"
                   data-aos-duration="800">
-            <p className='leading-8 px-8 pb-5'>&emsp;The world of cosplay is as diverse in its materials as it is in its characters. Foam, leather, paint, electronics, 3D printing, wood – the list goes on. CozShare isn&apos;t just a showcase; it&apos;s a hub of creation and inspiration. Our goal is to connect cosplayers globally, allowing you to buy, sell, and be inspired. Share your costume photos and videos, instructional content, discuss events, and explore prop and costume tutorials. Patterns, downloadable resources, and artist shop links are just a click away. CozShare is more than a platform; it&apos;s a community that echoes the mantra: "Let&apso;s all work together to keep a community that creates!"</p>
+            <p className='leading-8 px-8 pb-5'>&emsp;The world of cosplay is as diverse in its materials as it is in its characters. Foam, leather, paint, electronics, 3D printing, wood – the list goes on. CozShare isn&apos;t just a showcase; it&apos;s a hub of creation and inspiration. Our goal is to connect cosplayers globally, allowing you to buy, sell, and be inspired. Share your costume photos and videos, instructional content, discuss events, and explore prop and costume tutorials. Patterns, downloadable resources, and artist shop links are just a click away. CozShare is more than a platform; it&apos;s a community that echoes the mantra: &quot;Let&apso;s all work together to keep a community that creates!&quot;</p>
             </div>
           </div>
 

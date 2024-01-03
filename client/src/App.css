@@ -100,3 +100,19 @@
         .rotate-back{
           animation: rotateBack 100ms forwards ease-in-out;
         }
+
+        .tab:hover {
+          text-decoration: underline 3px solid; /* Thick underline on hover */
+          text-underline-offset: 4px; /* Adjust space between text and underline */
+        }
+        .tab-content {
+          padding: 2rem;
+         /* Adjust as needed */
+          border-radius: 0 0 1rem 1rem;
+          border-top: none; /* Make content blend with tabs */
+        }
+     /* Base styles for tabs */
+        .tab{
+          border-bottom: none;
+          
+        }

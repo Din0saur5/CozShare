@@ -17,7 +17,13 @@ export default {
       scale: {
         '200': '2.00',
         '225': '2.25',
-      }
+      },
+      width: {
+        'bg': 'calc(100vw - 20rem)', 
+      },
+      margin: {
+        'rightside':'calc(100vw-10rem)',
+      },
 
 
 

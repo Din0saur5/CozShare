@@ -2,7 +2,7 @@
 from flask import Flask, request, session, render_template, make_response
 from flask_restful import Resource
 from config import app, db, api
-from models import User
+from models import User, Post, Comment, Event, EventPosts, Members, PostComment
 from sqlalchemy.exc import IntegrityError
 @app.route('/')
 @app.route('/<int:id>')
@@ -187,6 +187,31 @@ class GetFollows(Resource):
     
     return make_response( deduped_combined, 200)
   
+class GetFeed(Resource):
+  def get(self,id):
+    user = User.query.filter(User.id == id).first()
+    if not user:
+      return {'error': 'User not found'}, 404
+
+    following_list = user.following
+  
+    limit = request.args.get('limit', 20, type=int)
+    offset = request.args.get('offset', 0, type=int)
+
+    posts = Post.query.filter(Post.user_id.in_(following_list)) \
+                      .order_by(Post.created.desc()) \
+                      .limit(limit) \
+                      .offset(offset) \
+                      .all()
+
+    
+    posts_data = [post.to_dict() for post in posts]  
+
+    return make_response(posts_data, 200)
+  
+  
+  
+api.add_resource(GetFeed, '/feed/<uuid:id>')  
 api.add_resource(GetFollows, '/follows/<uuid:id>')
 api.add_resource(GetFollowing, '/following/<uuid:id>')  
 api.add_resource(GetFollowers, '/followers/<uuid:id>')
