@@ -1,5 +1,6 @@
 import React from 'react'
 import FollowersTable from './FollowersTable'
+import FollowingTable from './FollowingTable'
 
 const ProfileLayout = ({activeTab, userData, setUserData}) => {
     switch(activeTab){
@@ -11,9 +12,9 @@ const ProfileLayout = ({activeTab, userData, setUserData}) => {
             )
         case 'Inspired by':
             return(
-                <div>
-                    isnipred by
-                </div>
+                <>
+                    <FollowingTable userData={userData} setUserData={setUserData}/>
+                </>
             )
         case 'posts':
             return(

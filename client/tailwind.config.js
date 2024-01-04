@@ -24,6 +24,9 @@ export default {
       margin: {
         'rightside':'calc(100vw-10rem)',
       },
+      colors: {
+        third: '#af4670',
+      },
 
 
 

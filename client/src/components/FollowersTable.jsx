@@ -1,38 +1,58 @@
 /* eslint-disable react/prop-types */
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import UserRow from './UserRow'
 import AOS from 'aos';
 const FollowersTable = ({userData, setUserData}) => {
-    const [followerList, setFollowerList] = useState(userData.followers)
+  
+  const [followersList, setFollowersList] = useState([])
+ 
+  useEffect(()=>{
+    const server = import.meta.env.VITE_URL;
+    const config = {
+        credentials: 'include',
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        }};
+  fetch(`${server}/followers/${userData.id}`,config)
+    .then(response => {
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+      return response.json();
+    })
+    .then(data => {
+      setFollowersList(data);
+      //console.log(data)
+    })
+    .catch(error => {
+      console.error("Fetching data failed", error);
+      // Handle the error state appropriately
+      // e.g., set an error message state variable to display an error message
+    })
+  },[userData])
+
+ 
+  useEffect(()=>{  
     AOS.init({
         once: true, // whether animation should happen only once - while scrolling down
         useClassNames: true, // if true, will add content of `data-aos` as classes on scroll
         initClassName: false, // disable initialization classes
         animatedClassName: 'animated', // class applied on animation
       });
+    },[])
   return (
-    <div style={{height:"200vh"}} className="overflow-x-auto">
-  <table className="table">
-    {/* head */}
-    <thead>
-      <tr>
-        <th>
-         &nbsp;
-        </th>
-        
-        <th></th>
-      </tr>
-    </thead>
-    <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xxl:grid-cols-4'>
-    {followerList? (followerList.map(user=>{
-        return <UserRow  key={user.id} user={user} currentUser={userData} setCurrentUserData={setUserData}/>
+    <div style={{height:"100%"}} className="overflow-x-auto overflow-y-hidden ">
+  
+   
+    <div style={{textShadow: "0 0 15px #e3d2de , 0 0 15px #e3d2de "}} className=" divider divider-secondary">followers {followersList.length}</div>
+    <div className='grid md:grid-cols-2 lg:grid-cols-1  xl:grid-cols-2 2xl:grid-cols-3 overflow-x-hidden'>
+    {followersList? (followersList.map(user=>{
+        return <UserRow  key={user.id} user={user} currentUser={userData} setList={setFollowersList} list={followersList} table={'followers'} setCurrentUserData={setUserData}/>
     })
       ):<small>no followers</small>
 }
     </div>
-   
-    
-  </table>
 </div>
   )
 }

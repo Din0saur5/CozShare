@@ -1,5 +1,5 @@
 
-    import React, { useState } from 'react'
+    import React, { useEffect, useState } from 'react'
     import '../App.css';
 import { HashLink } from 'react-router-hash-link';
 import SignupForm from '../components/SignupForm';
@@ -7,6 +7,7 @@ import LoginForm from '../components/LoginForm';
 import AOS from 'aos';
 import 'aos/dist/aos.css';
 import { useOutletContext } from 'react-router-dom';
+import { themeChange } from 'theme-change';
 
 
 //darkmode light mode top right corner use icons
@@ -29,11 +30,15 @@ import { useOutletContext } from 'react-router-dom';
         animatedClassName: 'animated', // class applied on animation
       });
 
+      useEffect(() => { 
+        themeChange(false)
+        // 👆 false parameter is required for react project
+      }, [])
 
 
       return (
         <>
-          <div className="hero min-h-screen bg-yell bg-fixed bg-center bg-no-repeat bg-cover h-full" >
+          <div className="hero min-h-screen bg-yell bg-fixed bg-center bg-no-repeat bg-cover h-full " >
           <label className="absolute top-0 right-2   swap swap-rotate">
   
             {/* this hidden checkbox controls the state */}
@@ -107,14 +112,14 @@ Welcome to the realm of imagination and endless possibilities! 🚀</p>
           </div>
 
           </div>
-            <dialog id="sign-log" className={`modal md:mx-0 ${signLog ? 'animate-slideDown' : 'animate-slideUp'}`}>
+            <dialog id="sign-log" className={`modal overflow-y-scroll md:mx-0 ${signLog ? 'animate-slideDown' : 'animate-slideUp'}`}>
               <div className="modal-box">
                 <form method="dialog">
                   {/* if there is a button in form, it will close the modal */}
                   <button onClick={()=>{setSignLog(false)}} className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
                 </form>
                 <h3 className="font-bold text-lg">WELCOME!</h3>
-                <div className="py-4">
+                <div className="py-4 ">
                   {showLogin ? (
                     <>
                      <SignupForm/>

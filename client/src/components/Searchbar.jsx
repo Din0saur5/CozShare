@@ -28,6 +28,13 @@ function SearchBar({follows}) {
     setSuggestions([]);
 
   };
+  function truncateString(str, numChars) {
+    if (str.length > numChars) {
+      return str.slice(0, numChars-2) + "...";
+    } else {
+      return str;
+    }
+  }
 
     
     return (
@@ -55,7 +62,7 @@ function SearchBar({follows}) {
             </div>
             </div>
             <div className='hover:bg-transparent'>
-              {suggestion.display_name}
+              {truncateString(suggestion.display_name,13)}
               </div>
             </li>
           ))}

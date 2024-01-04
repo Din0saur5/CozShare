@@ -24,7 +24,7 @@ async function fetchData() {
   const response = await fetch(`${server}/check_session`);
   if (response.ok) {
     const data = await response.json();
-    console.log(data)
+    
     return data
   } else{
   return null

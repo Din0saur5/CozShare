@@ -89,24 +89,27 @@ class UserById(Resource):
         }
         return make_response(rb, 404)
   
-  def patch(self,id):
-    u = User.query.filter(User.id == id ).first()
+  def patch(self, id):
+    u = User.query.filter(User.id == id).first()
     if u:
         try:
+            # Assuming you have a list of allowed attributes to update
+            allowed_attrs = ['display_name', 'email', 'bio', 'followers', 'following', 'catchphrase','profile_pic' ]  # example attributes
             for attr in request.json:
-                setattr(u, attr, request.json.get(attr))
-                db.session.commit()
-                rb = u.to_dict()
+                if attr in allowed_attrs:
+                    setattr(u, attr, request.json.get(attr))
+
+            db.session.commit()
+            rb = u.to_dict()
             return make_response(rb, 202)
-        except ValueError:
-            rb = {
-            "errors": ["validation errors"]
-            }
+
+        except (ValueError, AttributeError, IntegrityError) as e:
+            db.session.rollback()  # Rollback in case of any exception
+            rb = {"errors": ["Validation errors", str(e)]}
             return make_response(rb, 400)
+
     else:
-        rb ={
-        "error": "Scientist not found"
-        }
+        rb = {"error": "User not found"}
         return make_response(rb, 404)
   
   def delete(self, id):
@@ -130,31 +133,31 @@ class GetFollowers(Resource):
 
       # Assuming 'followers' is a list of user IDs
     followers_list = user.followers
-
       # Query for all users whose IDs are in the followers list
     followers = User.query.filter(User.id.in_(followers_list)).all()
+    
       
       # Serialize the follower data
-    rb= [f.to_dict(only=('id', 'profile_pic','display_name')) for f in followers] 
+    rb= [f.to_dict(only=('id', 'profile_pic','display_name','followers','following', 'catchphrase')) for f in followers] 
       
     return make_response(rb, 200)
   
 class GetFollowing(Resource):
   def get(self, id):
-    
+    print(id)
     user = User.query.filter(User.id == id).first()
     if not user:
       return {'error': 'User not found'}, 404
 
       # Assuming 'followers' is a list of user IDs
     following_list = user.following
-
+    print(user.following)
       # Query for all users whose IDs are in the followers list
     following = User.query.filter(User.id.in_(following_list)).all()
-      
+    
       # Serialize the follower data
-    rb= [f.to_dict(only=('id', 'profile_pic','display_name')) for f in following] 
-      
+    rb= [f.to_dict(only=('id', 'profile_pic','display_name', 'catchphrase','followers','following')) for f in following] 
+     
     return make_response(rb, 200)
 
 class GetFollows(Resource):
@@ -208,9 +211,59 @@ class GetFeed(Resource):
     posts_data = [post.to_dict() for post in posts]  
 
     return make_response(posts_data, 200)
-  
-  
-  
+class HandleFollows(Resource):
+    def post(self):
+        # Log incoming data and types
+        incoming_data = request.get_json()
+        print("Received data:", incoming_data, "Type:", type(incoming_data))
+
+        target_user_id = incoming_data.get('target_user_id')
+        print("Target User ID:", target_user_id, "Type:", type(target_user_id))
+
+        if not target_user_id:
+            return make_response({"error": "Missing user IDs"}, 400)
+
+        session_user_id = str(session.get('user_id'))
+        print("Session User ID:", session_user_id, "Type:", type(session_user_id))
+
+        user = User.query.filter(User.id == session_user_id).first()
+        target_user = User.query.filter(User.id == target_user_id).first()
+
+        if not user:
+            print("User not found with ID:", session_user_id)
+        if not target_user:
+            print("Target user not found with ID:", target_user_id)
+
+        if not user or not target_user:
+            return make_response({"error": "User not found"}, 404)
+
+        print("User following before action:", user.following, "Type:", type(user.following))
+        print("Target user followers before action:", target_user.followers, "Type:", type(target_user.followers))
+
+        if str(target_user_id) in user.following:
+          # Create a new list excluding target_user_id and assign it back
+          user.following = [uid for uid in user.following if uid != str(target_user_id)]
+          target_user.followers = [uid for uid in target_user.followers if uid != str(user.id)]
+          action = "unfollowed"
+        else:
+            print("Follow action")
+            user.following = user.following + [str(target_user.id)]
+            target_user.followers = target_user.followers + [str(user.id)]
+            action = "followed"
+
+        print("User following after action:", user.following)
+        print("Target user followers after action:", target_user.followers)
+
+        try:
+            db.session.commit()
+            print("Database commit successful")
+            return make_response({"action": f"{action}", "user":user.to_dict(), "target":target_user.to_dict()}, 201)
+        except Exception as e:
+            print("Error on commit:", e)
+            db.session.rollback()
+            return make_response({"error": "Database commit failed"}, 500)
+
+api.add_resource(HandleFollows, '/handle_follows')
 api.add_resource(GetFeed, '/feed/<uuid:id>')  
 api.add_resource(GetFollows, '/follows/<uuid:id>')
 api.add_resource(GetFollowing, '/following/<uuid:id>')  
