@@ -11,8 +11,8 @@ import "../App.css"
 
 const AppLayout = () =>{
   const navigate = useNavigate();
-  let data = null
-  data = useLoaderData(); 
+  
+  let data = useLoaderData(); 
   const [userData, setUserData] = useState(data)
   useEffect(()=>{
     setUserData(data) 
@@ -20,7 +20,7 @@ const AppLayout = () =>{
     if (data === null){
     navigate('/')
     }
-  },[data, navigate, userData])
+  },[data, navigate, userData, ])
 
 
     
