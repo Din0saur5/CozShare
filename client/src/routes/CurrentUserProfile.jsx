@@ -7,7 +7,7 @@ const CurrentUserProfile = () => {
     const [userData, setUserData] = useOutletContext() 
     const [userDataO, setUserDataO] = useState(userData)
     const server = import.meta.env.VITE_URL
-    const {id, display_name, catchphrase, profile_pic, following, followers, bio } = userDataO
+    const {id, display_name, catchphrase, profile_pic, bio } = userDataO
     const [bioCurrent, setBioCurrent] = useState(bio)
     const [showSubmitBio, setShowSubmitBio] = useState(false)
     const [errors, setErrors] = useState([]) 
@@ -75,7 +75,7 @@ const CurrentUserProfile = () => {
         
         <form onSubmit={(e)=>{handleSubmitBio(e)}}>
             <div className="label">
-                <span className="label-text">Your bio:</span>
+                <span className="label-text">Your Bio:</span>
             </div>
             <textarea className=" peer focus:right-1/4 focus:absolute focus:z-10 sm:focus:static  w-54 -ml-52 sm:ml-auto sm:w-96 rounded-xl textarea textarea-ghost" value={bioCurrent} onChange={(e)=>handleChangeBio(e)} placeholder='set your catchphrase'></textarea>
             <button type='submit' className={`${showSubmitBio? 'visible': 'hidden'} peer-focus:right-1/4 peer-focus:z-10 peer-focus:absolute border p-1 rounded ml-2 border-secondary` }><FaPaintBrush /></button>
@@ -106,7 +106,7 @@ const CurrentUserProfile = () => {
     
       </div>
       <div className="relative rounded-tl-lg bg-third p-4 mx-4 h-full min-h-screen border border-third rounded-b-lg">
-            <ProfileLayout activeTab={activeTab} userData={userData} setUserData={setUserDataO}/>
+            <ProfileLayout activeTab={activeTab} userData={userData} setUserData={setUserDataO} viewedProfile={id}/>
         </div>
       </div>
   

@@ -5,7 +5,7 @@ import { stringify } from 'postcss'
 import React, { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 
-const UserRow = ({user, currentUser, setCurrentUserData, setList, list, table}) => {
+const UserRow = ({user, currentUser, setCurrentUserData, setList, list, table, viewedProfile}) => {
     const server = import.meta.env.VITE_URL
 
    // console.log(user)
@@ -15,7 +15,9 @@ const UserRow = ({user, currentUser, setCurrentUserData, setList, list, table}) 
  
     useEffect(()=>{
 
-        if (user.followers.includes(currentUser.id)){
+        if(user.id == currentUser.id)
+            setFollowStatus('currentUser')
+        else if (user.followers.includes(currentUser.id)){
             
             setFollowStatus(true)
         }
@@ -24,60 +26,13 @@ const UserRow = ({user, currentUser, setCurrentUserData, setList, list, table}) 
             setFollowStatus(false)
         }
         
-    },[user.followers, currentUser, list])
+    },[user, currentUser, list])
       
  
-  
-    // const handleFollow = () => {
-    //     let following 
-    //     let followerof 
-    //     if (!followStatus) {
-    //       following = [...currentUser.following, userData.id];
-    //       followerof = [...userData.followers, currentUser.id];
-          
-    //     } else {
-    //       following = currentUser.following.filter(f => f !== userData.id);
-    //       followerof = userData.followers.filter(f => f !== currentUser.id);
-          
-    //     }
-    //     console.log(following)
-    //     console.log(followerof)
-    //     const config = {
-    //       credentials: 'include',
-    //       method: "PATCH",
-    //       headers: {
-    //         "Content-Type": "application/json",
-    //       },
-    //       body: JSON.stringify({ following: following }),
-    //     };
-    //     const config2 = {
-    //       credentials: 'include',
-    //       method: "PATCH",
-    //       headers: {
-    //         "Content-Type": "application/json",
-    //       },
-    //       body: JSON.stringify({ followers: followerof }),
-    //     };
-      
-    //     Promise.all([
-    //       fetch(`${server}/users/${currentUser.id}`, config),
-    //       fetch(`${server}/users/${userData.id}`, config2)
-    //     ])
-    //     .then(responses => Promise.all(responses.map(res => {
-    //       if (!res.ok) {
-    //         throw new Error(`HTTP error! status: ${res.status}`);
-    //       }
-    //       return res.json();
-    //     })))
-    //     .then(data => {
-    //      console.log(data)
-    //       setCurrentUserData(data[0])
-    //       setUserData(data[1])
-    //       setFollowStatus(!followStatus)
             
           
       
-    function handleFollow(userId, targetUserId) {
+    function handleFollow( targetUserId) {
         const url = `${server}/handle_follows`; // Adjust this to your server's URL
         const data = {
             target_user_id: targetUserId
@@ -116,7 +71,7 @@ const UserRow = ({user, currentUser, setCurrentUserData, setList, list, table}) 
                         "Content-Type": "application/json",
                     }
                 };
-                return fetch(`${server}/followers/${currentUser.id}`, config);
+                return fetch(`${server}/followers/${viewedProfile}`, config);
             }
             else if (table === 'following'){
                 const config = {
@@ -126,12 +81,9 @@ const UserRow = ({user, currentUser, setCurrentUserData, setList, list, table}) 
                         "Content-Type": "application/json",
                     }
                 };
-                return fetch(`${server}/following/${currentUser.id}`, config);
+                return fetch(`${server}/following/${viewedProfile}`, config);
             }
-            else if (table === 'other'){
-                // Handle the 'other' case or return a default value
-                return Promise.resolve(); // Resolve with an empty promise
-            }
+           
         })
         .then(response => {
             if (!response) return; // If response is undefined, skip JSON parsing
@@ -166,7 +118,10 @@ const UserRow = ({user, currentUser, setCurrentUserData, setList, list, table}) 
   <h2 className="card-title">{userData.display_name}</h2></Link>
     <p className='card-body p-0' >{userData.catchphrase}</p> 
     <div className="card-actions justify-end">
-        <button onClick={()=>{handleFollow(currentUser.id,userData.id)}} className="btn btn-secondary btn-xs">{followStatus? 'Unfollow':'Follow' }</button>
+        {followStatus === 'currentUser'? (<></>):(
+            
+            <button onClick={()=>{handleFollow(userData.id)}} className="btn btn-secondary btn-xs">{followStatus? 'Unfollow':'Follow' }</button>
+        )}
     </div>
   </div>
 </div>

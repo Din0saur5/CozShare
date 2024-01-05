@@ -25,7 +25,10 @@ class User(db.Model, SerializerMixin):
    events = db.relationship('Event', secondary='members' ,back_populates='users')
    
    # Serialize Rules
-   serialize_rules = ('-_password_hash','-posts.user', '-comments.user', '-events.users')
+   serialize_rules = (
+        '-posts', '-comments', '-owned_events', '-events', 
+        '-_password_hash'
+   )
    
    @hybrid_property
    def password_hash(self):
@@ -50,13 +53,13 @@ class User(db.Model, SerializerMixin):
          raise ValueError('catchphrase must be >=47 characters.')
       return value
 # Post Model
-class Post(db.Model):
+class Post(db.Model, SerializerMixin):
    __tablename__ = 'posts'
     
    id = db.Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
    user_id = db.Column(UUID(as_uuid=True), db.ForeignKey('users.id'), nullable=False)
    post_type = db.Column(db.Integer)
-   media = db.Column(db.Text)
+   media = db.Column(db.ARRAY(db.TEXT))
    caption = db.Column(db.TEXT)
    likes = db.Column(db.ARRAY(db.TEXT))
    created = db.Column(db.DateTime, index=True, server_default=db.func.now())
@@ -67,10 +70,10 @@ class Post(db.Model):
    comments = db.relationship('Comment', secondary='post_comments', back_populates='post', )
    events = db.relationship('Event', secondary='event_posts', back_populates='posts')
    # Serialize Rules
-   serialize_rules = ('-user.posts', '-comments.post','-events.posts')
+   serialize_rules = ('-user.posts', '-comments.post','-events.posts','-comments.user')
    
    # Comment Model
-class Comment(db.Model):
+class Comment(db.Model, SerializerMixin):
    __tablename__ = 'comments'
    
    id = db.Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
@@ -87,7 +90,7 @@ class Comment(db.Model):
    
    
 # PostComments Model (association table)
-class PostComment(db.Model):
+class PostComment(db.Model, SerializerMixin):
    __tablename__ = 'post_comments'
     
    id = db.Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
@@ -96,25 +99,26 @@ class PostComment(db.Model):
    
    
    
-class Event(db.Model):
+class Event(db.Model, SerializerMixin):
    __tablename__ = 'events'
    
    id = db.Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
    admin_id = db.Column(UUID(as_uuid=True), db.ForeignKey('users.id'), nullable=False)
-   created = db.Column(db.DateTime, index=True, server_default=db.func.now())
-   eventTime= db.Column(db.DateTime, index=True )
-   profile_pic = db.Column(db.Text)
-   location = db.Column(db.Text)
-   display_name = db.Column(db.Text)
+   created = db.Column(db.DateTime, server_default=db.func.now())
+   eventTime= db.Column(db.DateTime, nullable=False)
+   profile_pic = db.Column(db.Text, nullable=False)
+   location = db.Column(db.Text, nullable=False)
+   display_name = db.Column(db.Text, nullable=False)
+   description = db.Column(db.Text, default = '🤷')
    
    admin = db.relationship('User', back_populates='owned_events')
    users = db.relationship('User', secondary='members', back_populates='events')
    posts = db.relationship('Post', secondary='event_posts', back_populates='events')
 
-   # Serialize Rules
-   serialize_rules = ('-users', '-posts.event')
-   
-class EventPosts(db.Model):
+   serialize_rules = (
+        '-users', '-posts', '-admin.owned_events', '-admin.events'
+    )
+class EventPosts(db.Model, SerializerMixin):
    __tablename__ = 'event_posts'
    
    id = db.Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
@@ -122,7 +126,7 @@ class EventPosts(db.Model):
    post_id = db.Column(UUID(as_uuid=True), db.ForeignKey('posts.id', ondelete='CASCADE'), nullable=False)
    
    
-class Members(db.Model):
+class Members(db.Model, SerializerMixin):
    __tablename__ = 'members'
    
    id = db.Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)

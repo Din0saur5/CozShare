@@ -4,6 +4,7 @@ from flask_restful import Resource
 from config import app, db, api
 from models import User, Post, Comment, Event, EventPosts, Members, PostComment
 from sqlalchemy.exc import IntegrityError
+import uuid
 @app.route('/')
 @app.route('/<int:id>')
 def index(id=0):
@@ -262,7 +263,106 @@ class HandleFollows(Resource):
             print("Error on commit:", e)
             db.session.rollback()
             return make_response({"error": "Database commit failed"}, 500)
+          
+          
+          
+class CreateEvent(Resource):
+  def post(self):
+    data = request.json
+    print("Received event data:", data)
 
+    try:
+        new_event = Event(
+            admin_id=uuid.UUID(data['admin_id']),
+            eventTime=data['eventTime'],
+            profile_pic=data['profile_pic'],
+            location=data['location'],
+            display_name=data['display_name'],
+            description=data['description']
+        )
+        db.session.add(new_event)
+        db.session.commit()
+        print("New event created:", new_event.id)
+        rb = new_event.to_dict()
+        return make_response(rb ,201)
+    except Exception as e:
+        print("Error creating event:", e)
+        db.session.rollback()
+        return make_response({"error": "Error creating event"}, 500)
+      
+      
+class AllMembers(Resource):
+  def post(self):
+    data = request.json
+    print("Received member data:", data)
+
+    try:
+        new_member = Members(
+            user_id=uuid.UUID(data['user_id']),
+            event_id=uuid.UUID(data['event_id'])
+        )
+        db.session.add(new_member)
+        db.session.commit()
+        print("New member added:", new_member.id)
+        return make_response(new_member.to_dict(),201)
+    except Exception as e:
+        print("Error adding member:", e)
+        db.session.rollback()
+        return make_response({"error": "Error adding member"}, 500)
+    
+class AllPost(Resource):
+  
+  def post(self):
+    data = request.get_json()
+    print("Received post data:", data)
+
+    try:
+        new_post = Post(
+            user_id=uuid.UUID(data['user_id']),
+            post_type=data['post_type'],
+            media=data['media'],
+            caption=data['caption'],
+            likes=data['likes']
+        )
+        db.session.add(new_post)
+        db.session.commit()
+        print("New post created:", new_post.id)
+
+        response_data = new_post.to_dict()
+        return make_response(response_data, 201)  # Flask-RESTful converts the dict to JSON
+    except Exception as e:
+        print("Error creating post:", e)
+        db.session.rollback()
+        return make_response({'error': 'Error creating post'}, 500)
+
+class CreateEventPost(Resource):
+    def post(self):
+        data = request.get_json()
+        print("Received event-post data:", data)
+
+        try:
+            new_event_post = EventPosts(
+                event_id=uuid.UUID(data['event_id']),
+                post_id=uuid.UUID(data['post_id'])
+            )
+            db.session.add(new_event_post)
+            db.session.commit()
+            print("New event-post entry created:", new_event_post.id)
+
+            response_data = new_event_post.to_dict()
+            return make_response(response_data, 201)
+        except Exception as e:
+            print("Error creating event-post entry:", e)
+            db.session.rollback()
+            return make_response({'error': 'Error creating event-post entry'}, 500)
+
+
+
+
+api.add_resource(CreateEventPost, '/event-posts')
+api.add_resource(AllPost, '/posts')    
+api.add_resource(AllMembers, '/members')    
+api.add_resource(CreateEvent, '/events')
 api.add_resource(HandleFollows, '/handle_follows')
 api.add_resource(GetFeed, '/feed/<uuid:id>')  
 api.add_resource(GetFollows, '/follows/<uuid:id>')

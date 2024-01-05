@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from 'react'
 import UserRow from './UserRow'
 import AOS from 'aos';
-const FollowingTable = ({userData, setUserData}) => {
+const FollowingTable = ({userData, setUserData, viewedProfile}) => {
     const [followingList, setFollowingList] = useState([])
    
     useEffect(()=>{
@@ -13,7 +13,7 @@ const FollowingTable = ({userData, setUserData}) => {
           headers: {
             "Content-Type": "application/json",
           }};
-    fetch(`${server}/following/${userData.id}`,config)
+    fetch(`${server}/following/${viewedProfile}`,config)
       .then(response => {
         if (!response.ok) {
           throw new Error(`HTTP error! Status: ${response.status}`);
@@ -30,7 +30,7 @@ const FollowingTable = ({userData, setUserData}) => {
         // Handle the error state appropriately
         // e.g., set an error message state variable to display an error message
       })
-    },[userData])
+    },[viewedProfile, userData])
    
   
     useEffect(()=>{ 
@@ -47,7 +47,7 @@ const FollowingTable = ({userData, setUserData}) => {
     <div style={{textShadow: "0 0 15px #e3d2de , 0 0 15px #e3d2de "}} className=" divider divider-secondary ">following {followingList.length}</div>
     <div className='grid md:grid-cols-2 lg:grid-cols-1  xl:grid-cols-2 2xl:grid-cols-3 overflow-x-hidden'>
     {followingList? (followingList.map(user=>{
-        return <UserRow  key={user.id} user={user} currentUser={userData} setList={setFollowingList} list={followingList} table={'following'} setCurrentUserData={setUserData}/>
+        return <UserRow  key={user.id} user={user} currentUser={userData} setList={setFollowingList} list={followingList} table={'following'} setCurrentUserData={setUserData} viewedProfile={viewedProfile}/>
     })
       ):<small>no followers</small>
 }

@@ -8,6 +8,7 @@ const UserProfile = () => {
     let { id } = useParams(); 
     const server = import.meta.env.VITE_URL
     const [viewUserData, setViewUserData] = useState({})
+    const [userDataO, setUserDataO] = useState(userData) 
   useEffect(()=>{
     const config = {
       credentials: 'include',
@@ -25,10 +26,8 @@ const UserProfile = () => {
 
 
    
-    const { display_name, catchphrase, profile_pic, following, followers, bio } = viewUserData
-    const [bioCurrent, setBioCurrent] = useState(bio)
-    const [showSubmitBio, setShowSubmitBio] = useState(false)
-    const [errors, setErrors] = useState([]) 
+    const { display_name, catchphrase, profile_pic, bio } = viewUserData
+   
     const [activeTab, setActiveTab] = useState('posts');
 
   
@@ -36,7 +35,7 @@ const UserProfile = () => {
   return (
     <>
     <div className='flex flex-row bg-primary'>
-    <Sidebar userData={userData} setUserData={setUserData}  /> 
+    <Sidebar userData={userDataO} setUserData={setUserDataO}  /> 
     <div className=' lg:ml-80 z-5 lg:z-10 h-full w-full lg:w-bg bg-third sm:bg-base-200'>
      <div className='w-full h-1/5 lg:h-1/4 flex flex-row align-baseline bg-base-200'>
     <div className=' -mt-12 lg:-mt-5'>
@@ -52,13 +51,12 @@ const UserProfile = () => {
     </div>
     <div className="font-medium flex align-center flex-col mt-12 justify-center ">
         
-        <form >
+        <div>
             <div className="label">
-                <span className="label-text">Your bio:</span>
+                <span className="label-text">Bio:</span>
             </div>
-            <textarea className=" peer focus:right-1/4 focus:absolute focus:z-10 sm:focus:static  w-54 -ml-52 sm:ml-auto sm:w-96 rounded-xl textarea textarea-ghost" value={bioCurrent}  placeholder='set your catchphrase'></textarea>
-            <button type='submit' className={`${showSubmitBio? 'visible': 'hidden'} peer-focus:right-1/4 peer-focus:z-10 peer-focus:absolute border p-1 rounded ml-2 border-secondary` }><FaPaintBrush /></button>
-        </form>
+            <textarea className=" disabled w-54 -ml-52 sm:ml-auto sm:w-96 rounded-xl textarea textarea-ghost" value={bio} />
+        </div>
     </div>
      </div>
      <div className="flex flex-col invisible sm:visible">
@@ -85,7 +83,7 @@ const UserProfile = () => {
     
       </div>
       <div className="relative rounded-tl-lg bg-third p-4 mx-4 h-full min-h-screen border border-third rounded-b-lg">
-            <ProfileLayout activeTab={activeTab} userData={userData} setUserData={setUserData}/>
+            <ProfileLayout activeTab={activeTab} userData={userDataO} setUserData={setUserDataO} viewedProfile={id}/>
         </div>
       </div>
   
