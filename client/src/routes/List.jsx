@@ -3,6 +3,7 @@ import Sidebar from '../components/Sidebar'
 import { useOutletContext } from 'react-router-dom'
 import FollowingTable from '../components/FollowingTable'
 import FollowersTable from '../components/FollowersTable'
+import EventCreateForm from '../components/EventCreateForm'
 
 const List = ({type}) => {
     const [userData, setUserData] = useOutletContext() 
@@ -11,13 +12,16 @@ const listType = () => {
   
   switch(type){
     case'following':
-      return  <FollowingTable userData={userDataO} setUserData={setUserDataO}/>
+      return  <FollowingTable userData={userDataO} setUserData={setUserDataO} viewedProfile={userDataO.id} />
 
     case'followers':
-      return <FollowersTable userData={userDataO} setUserData={setUserDataO} />
+      return <FollowersTable userData={userDataO} setUserData={setUserDataO} viewedProfile={userDataO.id} />
 
     case 'events':
-      return 
+      return (
+      <div className='flex flex-row-reverse mr-2 mt-2'>
+        <EventCreateForm userData={userData} setUserData={setUserData}/>
+      </div>) 
   }
 }
 

@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react'
 import UserRow from './UserRow'
 import AOS from 'aos';
 const FollowersTable = ({userData, setUserData, viewedProfile}) => {
-  
+ 
   const [followersList, setFollowersList] = useState([])
  
   useEffect(()=>{

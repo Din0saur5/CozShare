@@ -85,7 +85,12 @@ async function fetchData() {
               path: "/search/:query",
               element: <List type={'query'}/>, 
               loader: fetchData,
-            }
+            },
+            {
+              path: "/events",
+              element: <List type={'events'}/>, 
+              loader: fetchData,
+            },
             
           ]
         }

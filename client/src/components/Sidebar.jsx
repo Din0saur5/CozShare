@@ -136,10 +136,10 @@ const Sidebar = ({userData, setUserData}) => {
         </div>
             {/* Sidebar content here */}
             <SearchBar follows = {allFollows}/>
-            <li className=' hidden sm:block text-primary hover:bg-primary hover:text-secondary rounded-2xl'><Link to='/dashboard'>Explore</Link></li>
-            <li className=' visible sm:hidden text-primary hover:bg-primary hover:text-secondary rounded-2xl'><Link to='/dashboard'>Events</Link></li>
-            <li className='hidden sm:block text-primary hover:bg-primary hover:text-secondary rounded-2xl'><Link to='/profile'>Your Profile</Link></li>
-            <li className='visible sm:hidden text-primary hover:bg-primary hover:text-secondary rounded-2xl'><div>Create Post</div></li>
+            <li className=' hidden lg:block text-primary hover:bg-primary hover:text-secondary rounded-2xl'><Link to='/dashboard'>Explore</Link></li>
+            <li className=' visible lg:hidden text-primary hover:bg-primary hover:text-secondary rounded-2xl'><Link to='/events'>Events</Link></li>
+            <li className='hidden lg:block text-primary hover:bg-primary hover:text-secondary rounded-2xl'><Link to='/profile'>Your Profile</Link></li>
+            <li className='visible lg:hidden text-primary hover:bg-primary hover:text-secondary rounded-2xl'><div>Create Post</div></li>
             <li className='text-primary hover:bg-primary hover:text-secondary rounded-2xl'><Link to='/followers'>Inspiring:  {followers? followers.length:'0'}</Link></li>
             <li className='text-primary hover:bg-primary hover:text-secondary rounded-2xl'><Link to='/following'>Inspired by:  {following? following.length:'0'}</Link></li>
             <div className="divider"></div>
