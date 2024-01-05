@@ -26,10 +26,11 @@ const ProfileLayout = ({activeTab, userData, setUserData, viewedProfile}) => {
         case 'events':
             
             return(
-                <>
+                <>{userData.id === viewedProfile?(
                 <div className='flex flex-row-reverse mr-2 mt-2'>
                     <EventCreateForm userData={userData} setUserData={setUserData}/>
                 </div>
+                 ):(<></>)} {/*<div className='mr-2 mt-2 w-full h-12'></div>*/}
                 </>
             )
     }
