@@ -37,7 +37,11 @@ export default {
    
   ],
   daisyui:{
-    themes: ["valentine", "coffee" ]
+    themes: [
+      {emerald:{
+        ...require("daisyui/src/theming/themes")["emerald"],
+          primary: '#af4670',
+      }}, "coffee" ]
   }
 }
 

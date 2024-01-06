@@ -1,6 +1,8 @@
-import React, { useEffect, useState } from 'react'
+/* eslint-disable react/prop-types */
+import  { useEffect, useState } from 'react'
 import AOS from 'aos';
 import EventRow from './EventRow';
+import EventCreateForm from './EventCreateForm';
 
 const EventsTable = ({userData, setUserData, viewedProfile}) => {
     const [eventList, setEventList] = useState([])
@@ -13,7 +15,7 @@ const EventsTable = ({userData, setUserData, viewedProfile}) => {
           headers: {
             "Content-Type": "application/json",
           }};
-    fetch(`${server}/events/${viewedProfile}`,config)
+    fetch(`${server}/eventsByUser/${viewedProfile}`,config)
       .then(response => {
         if (!response.ok) {
           throw new Error(`HTTP error! Status: ${response.status}`);
@@ -45,7 +47,12 @@ const EventsTable = ({userData, setUserData, viewedProfile}) => {
     <div  className="h-full overflow-x-auto ">
   
     {/* head */}
-    <div style={{textShadow: "0 0 15px #e3d2de , 0 0 15px #e3d2de "}} className=" divider divider-secondary ">Joined Events {eventList.length}</div>
+    <div style={{textShadow: "0 0 15px #a991f7 , 0 0 15px #fff "}} className=" divider divider-secondary  ">Joined Events {eventList.length}</div>
+    {userData.id === viewedProfile?( 
+                <div className='flex flex-row-reverse mr-2 mt-2'>
+                    <EventCreateForm userData={userData} setUserData={setUserData}/>
+                </div>
+                 ):(<></>)} {/*<div className='mr-2 mt-2 w-full h-12'></div>*/}
     <div className='grid md:grid-cols-2 lg:grid-cols-1  xl:grid-cols-2 2xl:grid-cols-3 overflow-x-hidden'>
     {eventList? (eventList.map(event=>{
         return <EventRow  key={event.id} event={event}/>

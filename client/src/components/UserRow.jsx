@@ -109,7 +109,7 @@ const UserRow = ({user, currentUser, setCurrentUserData, setList, list, table, v
     <>
     <div data-aos="fade-up" data-aos-delay="100"  className="card mt-2 w-96 bg-base-100 shadow-xl">
   <div className="card-body flex">
-  <Link to={`/profile/${userData.id}`}> 
+  <Link to={followStatus === 'currentUser'? '/profile': `/profile/${userData.id}`}> 
   <div className="avatar hover:bg-transparent ">
                 <div className="w-8 mask mask-hexagon hover:bg-transparent">
                     <img src={userData.profile_pic} />

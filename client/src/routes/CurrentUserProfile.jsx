@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import React, { useState } from 'react'
 import Sidebar from '../components/Sidebar'
 import { useOutletContext } from 'react-router-dom'
@@ -12,7 +13,7 @@ const CurrentUserProfile = () => {
     const [showSubmitBio, setShowSubmitBio] = useState(false)
     const [errors, setErrors] = useState([]) 
     const [activeTab, setActiveTab] = useState('posts');
-
+    
     const handleChangeBio = (e) => {
         setBioCurrent(e.target.value)
         setShowSubmitBio(true)
@@ -56,7 +57,7 @@ const CurrentUserProfile = () => {
 
   return (
     <>
-    <div className='flex flex-row bg-primary'>
+    <div className='flex flex-row bg-base-200'>
     <Sidebar userData={userDataO} setUserData={setUserDataO}  /> 
     <div className=' lg:ml-80 z-5 lg:z-10 h-full w-full lg:w-bg bg-third sm:bg-base-200'>
      <div className='w-full h-1/5 lg:h-1/4 flex flex-row align-baseline bg-base-200'>
@@ -68,16 +69,19 @@ const CurrentUserProfile = () => {
             <div className=" w-16 lg:w-24 mask mask-hexagon">
                 <img src={profile_pic} />
             </div>
+            <div className="sm:hidden  label">
+                <span className="label-text sm:hidden ">Your Bio:</span>
+            </div>
         </div>
         <div className='text-xl bold mb-2 ml-16 lg:ml-20' >{display_name}</div>
     </div>
     <div className="font-medium flex align-center flex-col mt-12 justify-center ">
         
         <form onSubmit={(e)=>{handleSubmitBio(e)}}>
-            <div className="label">
-                <span className="label-text">Your Bio:</span>
+            <div className="hidden sm:block label">
+                <span className="label-text ">Your Bio:</span>
             </div>
-            <textarea className=" peer focus:right-1/4 focus:absolute focus:z-10 sm:focus:static  w-54 -ml-52 sm:ml-auto sm:w-96 rounded-xl textarea textarea-ghost" value={bioCurrent} onChange={(e)=>handleChangeBio(e)} placeholder='set your catchphrase'></textarea>
+            <textarea className=" peer focus:right-1/4 focus:absolute focus:z-10 sm:focus:static  w-54 -ml-52 sm:ml-auto sm:w-96 rounded-xl textarea textarea-ghost line-clamp-2 focus:line-clamp-[10]" value={bioCurrent} onChange={(e)=>handleChangeBio(e)} placeholder='set your catchphrase'></textarea>
             <button type='submit' className={`${showSubmitBio? 'visible': 'hidden'} peer-focus:right-1/4 peer-focus:z-10 peer-focus:absolute border p-1 rounded ml-2 border-secondary` }><FaPaintBrush /></button>
         </form>
     </div>
@@ -87,10 +91,10 @@ const CurrentUserProfile = () => {
             
         
       <div className="relative right-0 flex flex-row-reverse space-x-2 rounded-t-xl w-full ">
-        {[ 'Inspiring', 'Inspired by', 'events', 'posts'].map((tab) => (
+        {[ 'Inspiring', 'Inspired by', 'Events', 'Posts'].map((tab) => (
             <label
             key={tab}
-            className={`tab border border-third flex-initial bg-base-100 ml-2 mr-4  rounded-t-xl text-center px-4 cursor-pointer hover:underline ${activeTab === tab ? 'bg-third text-base-100' : ''}`} >
+            className={`tab border border-third flex-initial bg-base-200 ml-2 mr-4  rounded-t-xl text-center px-4 cursor-pointer hover:underline ${activeTab === tab ? 'bg-primary text-base-100' : ''}`} >
             <input
               type="radio"
               name="tabs"
@@ -105,7 +109,7 @@ const CurrentUserProfile = () => {
       
     
       </div>
-      <div className="relative rounded-tl-lg bg-third p-4 mx-4 h-full min-h-screen border border-third rounded-b-lg">
+      <div className="relative rounded-tl-lg bg-base-300 p-4 mx-4 h-full min-h-screen border border-third rounded-b-lg">
             <ProfileLayout activeTab={activeTab} userData={userData} setUserData={setUserDataO} viewedProfile={id}/>
         </div>
       </div>

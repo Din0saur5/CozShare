@@ -1,7 +1,7 @@
-import React from 'react'
+/* eslint-disable react/prop-types */
+
 import FollowersTable from './FollowersTable'
 import FollowingTable from './FollowingTable'
-import EventCreateForm from './EventCreateForm'
 import EventsTable from './EventsTable'
 
 const ProfileLayout = ({activeTab, userData, setUserData, viewedProfile}) => {
@@ -18,20 +18,16 @@ const ProfileLayout = ({activeTab, userData, setUserData, viewedProfile}) => {
                     <FollowingTable userData={userData} setUserData={setUserData} viewedProfile={viewedProfile}/>
                 </>
             )
-        case 'posts':
+        case 'Posts':
             return(
                 <div>
                     posts
                 </div>
             )
-        case 'events':
+        case 'Events':
             
             return(
-                <>{userData.id === viewedProfile?(
-                <div className='flex flex-row-reverse mr-2 mt-2'>
-                    <EventCreateForm userData={userData} setUserData={setUserData}/>
-                </div>
-                 ):(<></>)} {/*<div className='mr-2 mt-2 w-full h-12'></div>*/}
+                <>
                 <EventsTable userData={userData} setUserData={setUserData} viewedProfile={viewedProfile} />
 
 

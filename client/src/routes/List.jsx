@@ -1,9 +1,9 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 import Sidebar from '../components/Sidebar'
 import { useOutletContext } from 'react-router-dom'
 import FollowingTable from '../components/FollowingTable'
 import FollowersTable from '../components/FollowersTable'
-import EventCreateForm from '../components/EventCreateForm'
+import EventsTable from '../components/EventsTable'
 
 const List = ({type}) => {
     const [userData, setUserData] = useOutletContext() 
@@ -19,9 +19,8 @@ const listType = () => {
 
     case 'events':
       return (
-      <div className='flex flex-row-reverse mr-2 mt-2'>
-        <EventCreateForm userData={userData} setUserData={setUserData}/>
-      </div>) 
+        <EventsTable userData={userData} setUserData={setUserData} viewedProfile={userDataO.id} /> 
+        ) 
   }
 }
 

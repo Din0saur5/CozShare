@@ -368,9 +368,25 @@ class GetGroupsByUserId(Resource):
     userGroups = user.events
     rb =  [event.to_dict(rules=('-admin',)) for event in userGroups]   
     return make_response(rb, 200) 
+  
+class EventsById(Resource):
+  def get(self, id):
+    event = Event.query.filter(Event.id == id).first()
+    if not event:
+      return {'error': 'Event not found'}, 404
+    return make_response(event.to_dict(rules=('-admin',)), 200)
     
-
-api.add_resource(GetGroupsByUserId, '/events/<uuid:id>')
+class MembersByEventId(Resource):
+  def get(self,id):
+    members = Members.query.filter(Members.event_id == id).all()
+    if not members:
+      return {'error': 'Members not found'}, 404
+    rb = [member.to_dict() for member in members]
+    return make_response(rb,200)
+    
+api.add_resource(MembersByEventId, '/members/<uuid:id>')    
+api.add_resource(GetGroupsByUserId, '/eventsByUser/<uuid:id>')
+api.add_resource(EventsById, '/events/<uuid:id>')
 api.add_resource(CreateEventPost, '/event-posts')
 api.add_resource(AllPost, '/posts')    
 api.add_resource(AllMembers, '/members')    

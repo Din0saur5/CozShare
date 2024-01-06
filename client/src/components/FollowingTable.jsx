@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import UserRow from './UserRow'
 import AOS from 'aos';
 const FollowingTable = ({userData, setUserData, viewedProfile}) => {

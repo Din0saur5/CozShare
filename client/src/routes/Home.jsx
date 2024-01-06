@@ -1,12 +1,12 @@
 
-    import React, { useEffect, useState } from 'react'
-    import '../App.css';
+import  { useEffect, useState } from 'react'
+import '../App.css';
 import { HashLink } from 'react-router-hash-link';
 import SignupForm from '../components/SignupForm';
 import LoginForm from '../components/LoginForm';
 import AOS from 'aos';
 import 'aos/dist/aos.css';
-import { useOutletContext } from 'react-router-dom';
+
 import { themeChange } from 'theme-change';
 
 
