@@ -39,6 +39,7 @@ const FollowersTable = ({userData, setUserData, viewedProfile}) => {
         useClassNames: true, // if true, will add content of `data-aos` as classes on scroll
         initClassName: false, // disable initialization classes
         animatedClassName: 'animated', // class applied on animation
+        disable: 'mobile'
       });
     },[])
   return (

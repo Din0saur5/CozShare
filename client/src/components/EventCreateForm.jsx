@@ -1,5 +1,7 @@
-import React, { useState } from 'react'
-import { FaCalendarAlt } from 'react-icons/fa'
+/* eslint-disable no-unused-vars */
+/* eslint-disable react/prop-types */
+import  { useState } from 'react'
+
 import Datepicker from "tailwind-datepicker-react"
 import { createEventPost } from './CreatePost'
 import Toast from './Toast'

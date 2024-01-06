@@ -25,3 +25,19 @@ const Event = () => {
 }
 
 export default Event
+
+
+// 
+// similar to a profile  has decription 
+//  if admin id have option to delete event 
+//if not admin the button will work as a leave event (delete req member tbl)--> delete from member table
+// tabs will be empty unless joined with a join button
+//  join join button by posting to members in top
+// when joined other tabs are available 
+// posts / members / group chat window
+// 
+// 
+// 
+// 
+// 
+// 

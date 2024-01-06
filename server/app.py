@@ -291,6 +291,9 @@ class CreateEvent(Resource):
         return make_response({"error": "Error creating event"}, 500)
       
       
+     
+      
+      
 class AllMembers(Resource):
   def post(self):
     data = request.json
@@ -309,7 +312,8 @@ class AllMembers(Resource):
         print("Error adding member:", e)
         db.session.rollback()
         return make_response({"error": "Error adding member"}, 500)
-    
+      
+
 class AllPost(Resource):
   
   def post(self):
@@ -356,9 +360,17 @@ class CreateEventPost(Resource):
             db.session.rollback()
             return make_response({'error': 'Error creating event-post entry'}, 500)
 
+class GetGroupsByUserId(Resource):
+  def get(self, id):
+    user = User.query.filter(User.id == id).first()
+    if not user:
+      return {'error': 'User not found'}, 404
+    userGroups = user.events
+    rb =  [event.to_dict(rules=('-admin',)) for event in userGroups]   
+    return make_response(rb, 200) 
+    
 
-
-
+api.add_resource(GetGroupsByUserId, '/events/<uuid:id>')
 api.add_resource(CreateEventPost, '/event-posts')
 api.add_resource(AllPost, '/posts')    
 api.add_resource(AllMembers, '/members')    

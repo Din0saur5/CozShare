@@ -4,7 +4,7 @@ import React, { useEffect, useState } from 'react'
 import { FaPaintBrush } from "react-icons/fa";
 import { Link, useNavigate } from 'react-router-dom';
 import SearchBar from './Searchbar';
-import { MdOutlineExplore } from "react-icons/md";
+import { VscFeedback } from "react-icons/vsc";
 import { themeChange } from 'theme-change';
 
 const Sidebar = ({userData, setUserData}) => {
@@ -86,6 +86,11 @@ const Sidebar = ({userData, setUserData}) => {
         
     },[])
 
+console.log(document.querySelector('drawer-side'))
+    const closeDrawer = () =>{
+        
+        document.getElementById('my-drawer-2').value = ''
+    }
 
     function logout() {
         setUserData(null);
@@ -136,11 +141,11 @@ const Sidebar = ({userData, setUserData}) => {
         </div>
             {/* Sidebar content here */}
             <SearchBar follows = {allFollows}/>
-            <li className=' hidden lg:block text-primary hover:bg-primary hover:text-secondary rounded-2xl'><Link to='/dashboard'>Explore</Link></li>
+            <li className=' hidden lg:block text-primary hover:bg-primary hover:text-secondary rounded-2xl'><Link to='/dashboard'>Feed</Link></li>
             <li className=' visible lg:hidden text-primary hover:bg-primary hover:text-secondary rounded-2xl'><Link to='/events'>Events</Link></li>
             <li className='hidden lg:block text-primary hover:bg-primary hover:text-secondary rounded-2xl'><Link to='/profile'>Your Profile</Link></li>
             <li className='visible lg:hidden text-primary hover:bg-primary hover:text-secondary rounded-2xl'><div>Create Post</div></li>
-            <li className='text-primary hover:bg-primary hover:text-secondary rounded-2xl'><Link to='/followers'>Inspiring:  {followers? followers.length:'0'}</Link></li>
+            <li className=' text-primary hover:bg-primary hover:text-secondary rounded-2xl'><Link to='/followers'>Inspiring:  {followers? followers.length:'0'}</Link></li>
             <li className='text-primary hover:bg-primary hover:text-secondary rounded-2xl'><Link to='/following'>Inspired by:  {following? following.length:'0'}</Link></li>
             <div className="divider"></div>
             <li className='text-primary hover:bg-primary hover:text-secondary rounded-2xl'><Link to='/settings'>Settings</Link></li>
@@ -173,7 +178,7 @@ const Sidebar = ({userData, setUserData}) => {
     <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" /></svg>
   </button>
   <button onClick={()=>{navigate('/dashboard')}} className="text-primary">
-  <MdOutlineExplore className='w-5 h-5' />
+  <VscFeedback className='w-5 h-5' />
   </button>
     </div>
 

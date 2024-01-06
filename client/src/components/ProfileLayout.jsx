@@ -2,6 +2,7 @@ import React from 'react'
 import FollowersTable from './FollowersTable'
 import FollowingTable from './FollowingTable'
 import EventCreateForm from './EventCreateForm'
+import EventsTable from './EventsTable'
 
 const ProfileLayout = ({activeTab, userData, setUserData, viewedProfile}) => {
     switch(activeTab){
@@ -31,6 +32,9 @@ const ProfileLayout = ({activeTab, userData, setUserData, viewedProfile}) => {
                     <EventCreateForm userData={userData} setUserData={setUserData}/>
                 </div>
                  ):(<></>)} {/*<div className='mr-2 mt-2 w-full h-12'></div>*/}
+                <EventsTable userData={userData} setUserData={setUserData} viewedProfile={viewedProfile} />
+
+
                 </>
             )
     }

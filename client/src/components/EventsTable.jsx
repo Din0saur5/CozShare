@@ -1,9 +1,9 @@
-/* eslint-disable react/prop-types */
 import React, { useEffect, useState } from 'react'
-import UserRow from './UserRow'
 import AOS from 'aos';
-const FollowingTable = ({userData, setUserData, viewedProfile}) => {
-    const [followingList, setFollowingList] = useState([])
+import EventRow from './EventRow';
+
+const EventsTable = ({userData, setUserData, viewedProfile}) => {
+    const [eventList, setEventList] = useState([])
    
     useEffect(()=>{
       const server = import.meta.env.VITE_URL;
@@ -13,7 +13,7 @@ const FollowingTable = ({userData, setUserData, viewedProfile}) => {
           headers: {
             "Content-Type": "application/json",
           }};
-    fetch(`${server}/following/${viewedProfile}`,config)
+    fetch(`${server}/events/${viewedProfile}`,config)
       .then(response => {
         if (!response.ok) {
           throw new Error(`HTTP error! Status: ${response.status}`);
@@ -22,7 +22,7 @@ const FollowingTable = ({userData, setUserData, viewedProfile}) => {
       })
       .then(data => {
         console.log(data)
-        setFollowingList(data);
+        setEventList(data);
         
       })
       .catch(error => {
@@ -45,10 +45,10 @@ const FollowingTable = ({userData, setUserData, viewedProfile}) => {
     <div  className="h-full overflow-x-auto ">
   
     {/* head */}
-    <div style={{textShadow: "0 0 15px #e3d2de , 0 0 15px #e3d2de "}} className=" divider divider-secondary ">following {followingList.length}</div>
+    <div style={{textShadow: "0 0 15px #e3d2de , 0 0 15px #e3d2de "}} className=" divider divider-secondary ">Joined Events {eventList.length}</div>
     <div className='grid md:grid-cols-2 lg:grid-cols-1  xl:grid-cols-2 2xl:grid-cols-3 overflow-x-hidden'>
-    {followingList? (followingList.map(user=>{
-        return <UserRow  key={user.id} user={user} currentUser={userData} setList={setFollowingList} list={followingList} table={'following'} setCurrentUserData={setUserData} viewedProfile={viewedProfile}/>
+    {eventList? (eventList.map(event=>{
+        return <EventRow  key={event.id} event={event}/>
     })
       ):<small>no followers</small>
 }
@@ -60,4 +60,4 @@ const FollowingTable = ({userData, setUserData, viewedProfile}) => {
   )
 }
 
-export default FollowingTable
+export default EventsTable
