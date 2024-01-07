@@ -5,6 +5,11 @@ from config import app, db, api
 from models import User, Post, Comment, Event, EventPosts, Members, PostComment
 from sqlalchemy.exc import IntegrityError
 import uuid
+import random
+
+def generate_random_hex_color():
+    # Generates a random hex color
+            return ''.join(random.choices('0123456789ABCDEF', k=6))
 @app.route('/')
 @app.route('/<int:id>')
 def index(id=0):
@@ -30,6 +35,7 @@ class Signup(Resource):
         new_user = User(
         email = email,
         display_name = display_name,
+        profile_pic = f'https://ui-avatars.com/api/?background={generate_random_hex_color()}'
         )
         new_user.password_hash = password
         try:
@@ -73,7 +79,9 @@ class Logout(Resource):
   def delete(self):
     if session.get('user_id'):
         session['user_id'] = None
-        return {}, 204
+        response = make_response({}, 204)
+        response.set_cookie('id', '', expires=0)  # Clear the 'id' cookie
+        return response
     return {'error': 'Unauthorized'}, 401
   
   
@@ -375,15 +383,53 @@ class EventsById(Resource):
     if not event:
       return {'error': 'Event not found'}, 404
     return make_response(event.to_dict(rules=('-admin',)), 200)
-    
+  
+  def delete(self, id):
+    e = Event.query.filter(Event.id == id).first() 
+    if e:
+        db.session.delete(e)
+        db.session.commit()
+        return make_response({}, 204)
+    else:
+        rb = {
+            "error": "Event not found"
+        }
+        return make_response(rb, 404)
 class MembersByEventId(Resource):
   def get(self,id):
     members = Members.query.filter(Members.event_id == id).all()
     if not members:
       return {'error': 'Members not found'}, 404
-    rb = [member.to_dict() for member in members]
-    return make_response(rb,200)
+    else:
+      membersData = []
+      for member in members:
+        memberData= User.query.filter(User.id == member.user_id).first()
+        membersData.append(memberData.to_dict(rules=('-email', '-bio')))
+      return make_response(membersData,200)
     
+    
+class SearchResource(Resource):
+    def post(self, search_type):
+        data = request.get_json()
+        search_query = data.get("query")
+        
+        if not search_query:
+            return make_response({"error": "No search query provided"}, 400)
+
+        search_query = f"%{search_query}%"
+        
+        if search_type.lower() == 'users':
+            results = User.query.filter(User.display_name.ilike(search_query)).all()
+        elif search_type.lower() == 'events':
+            results = Event.query.filter(Event.display_name.ilike(search_query)).all()
+        else:
+            return make_response({"error": "Invalid search type"}, 400)
+
+        return make_response([item.to_dict() for item in results], 200)
+
+
+
+api.add_resource(SearchResource, '/search/<string:search_type>')
 api.add_resource(MembersByEventId, '/members/<uuid:id>')    
 api.add_resource(GetGroupsByUserId, '/eventsByUser/<uuid:id>')
 api.add_resource(EventsById, '/events/<uuid:id>')

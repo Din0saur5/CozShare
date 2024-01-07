@@ -3,19 +3,41 @@
 import MembersTable from './MembersTable'
 
 
-const EventLayout = ({activeTab, userData, setUserData, viewedProfile}) => {
+const EventLayout = ({activeTab, userData, setUserData, memberList, viewedProfile, setMemberList}) => {
+    const isUserInList = memberList.some(member => member.id === userData.id);
+
+
     switch(activeTab){
         case 'Members':
-            return(
+            return(isUserInList?(
+
                 <>
-                {/* //create members table */}
-                    <MembersTable userData={userData} setUserData={setUserData} viewedProfile={viewedProfile}/>
+                 
+                     {userData.id === viewedProfile.admin_id? (
+                         <button className='btn bg-red-500'>Delete Event</button>
+                         ):(
+                          <button className='btn btn-accent'>Leave Event</button>
+                         )
+                        }
+                         
+                    <MembersTable userData={userData} setUserData={setUserData} memberList={memberList} viewedProfile={viewedProfile.id} setMemberList={setMemberList}/>
                 </>
+            ):(
+                
+                <div style={{textShadow: "0 0 15px #a991f7 , 0 0 15px #fff "}} className=" divider divider-secondary  ">Join Event to view {activeTab}</div>
+            )
             )
         case 'Chat':
-            return(
-               //navigate to a chat room with user id in paramswhen on mobile otherwise chat room is in desktop
-               <></>
+            return(isUserInList?
+               (
+
+                <>
+                 hi
+                </>
+            ):(
+                
+                <div style={{textShadow: "0 0 15px #a991f7 , 0 0 15px #fff "}} className=" divider divider-secondary  ">Join Event to view {activeTab}</div>
+            )
             )
         case 'Posts':
             //posts table from event posts fetch 

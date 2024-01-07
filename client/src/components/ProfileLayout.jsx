@@ -5,6 +5,9 @@ import FollowingTable from './FollowingTable'
 import EventsTable from './EventsTable'
 
 const ProfileLayout = ({activeTab, userData, setUserData, viewedProfile}) => {
+
+
+
     switch(activeTab){
         case 'Inspiring':
             return(
@@ -20,10 +23,12 @@ const ProfileLayout = ({activeTab, userData, setUserData, viewedProfile}) => {
             )
         case 'Posts':
             return(
-                <div>
+                <div> 
                     posts
                 </div>
             )
+                
+            
         case 'Events':
             
             return(

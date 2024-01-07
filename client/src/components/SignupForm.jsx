@@ -1,4 +1,4 @@
-import React from 'react';
+
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 import { useNavigate } from 'react-router-dom';
@@ -60,6 +60,7 @@ const SignupForm = () => {
       email: email,
       display_name: displayName,
       password: password
+
     };
   
     return fetch(url, {
@@ -126,6 +127,7 @@ const SignupForm = () => {
               type="email"
               className={`mt-1 block w-full ${errors.email && touched.email ? 'outline-red-500' : 'outline-green-500'}`}
             />
+              <ErrorMessage name="email" component="div" className="text-red-500" />
           </div>
 
           <div>
@@ -140,6 +142,7 @@ const SignupForm = () => {
               type="text"
               className={`mt-1 block w-full ${errors.displayName && touched.displayName ? 'outline-red-500' : 'outline-green-500'}`}
             />
+             <ErrorMessage name="displayName" component="div" className="text-red-500" />
           </div>
 
           <div>
@@ -154,6 +157,7 @@ const SignupForm = () => {
               type="password"
               className={`mt-1 block w-full ${errors.password && touched.password ? 'outline-red-500' : 'outline-green-500'}`}
             />
+            <ErrorMessage name="password" component="div" className="text-red-500" />
           </div>
 
           <div>
@@ -167,7 +171,8 @@ const SignupForm = () => {
               name="confirmPassword"
               type="password"
               className={`mt-1 block w-full ${errors.confirmPassword && touched.confirmPassword ? 'outline-red-500' : 'outline-green-500'}`}
-            />
+            /> 
+            <ErrorMessage name="confirmPassword" component="div" className="text-red-500" />
           </div>
 
           <button type="submit" className="mt-4 px-4 py-2 bg-blue-500 text-white rounded">

@@ -87,7 +87,7 @@ const Sidebar = ({userData, setUserData}) => {
         
     },[])
 
-
+    
 
     function logout() {
         setUserData(null);
@@ -97,6 +97,7 @@ const Sidebar = ({userData, setUserData}) => {
         })
         .then(response => {
             if (response.ok) {
+                
                 setUserData(null);
                 navigate("/");
             } else {

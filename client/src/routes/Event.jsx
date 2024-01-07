@@ -9,7 +9,7 @@ const Event = () => {
     const server = import.meta.env.VITE_URL
     const [viewEvent, setEvent] = useState({})
     const [userDataO, setUserDataO] = useState(userData) 
-    const [memberlist, setMemberList] = useState([{}])
+    const [memberList, setMemberList] = useState([{}])
     const [activeTab, setActiveTab] = useState('posts');
 
     useEffect(()=>{
@@ -57,7 +57,7 @@ const Event = () => {
 
   return (
     <>
-   <div className='flex flex-row'>
+   <div className='flex flex-row bg-base-200'>
     <Sidebar userData={userData} setUserData={setUserData}  /> 
     <div className=' lg:ml-80 z-5 lg:z-10 h-full w-full lg:w-bg bg-base-200'>
      <div className='w-full h-1/5 lg:h-1/4 flex flex-row align-baseline bg-base-200'>
@@ -110,13 +110,7 @@ const Event = () => {
     
       </div>
       <div className="relative rounded-tl-lg bg-base-300 p-4 mx-4 h-full min-h-screen border border-third rounded-b-lg">
-        {
-          // if admin make delete event button if not admin make a join/leave button at top also dont render info if
-          //not in group
-
-
-        }
-             {/* <EventLayout activeTab={activeTab} userData={userDataO} setUserData={setUserDataO} memberList={memberList} viewedProfile={id}/>  */}
+          <EventLayout activeTab={activeTab} userData={userDataO} setUserData={setUserDataO} memberList={memberList} viewedProfile={viewEvent} setMemberList={setMemberList}/> 
         </div>
   
      

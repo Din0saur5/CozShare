@@ -12,9 +12,10 @@ const UserRow = ({user, currentUser, setCurrentUserData, setList, list, table, v
     const [userData, setUserData] = useState(user)
     const [followStatus, setFollowStatus] = useState()
   
- 
-    useEffect(()=>{
+    
 
+    useEffect(()=>{
+        if (table != 'query'){
         if(user.id == currentUser.id)
             setFollowStatus('currentUser')
         else if (user.followers.includes(currentUser.id)){
@@ -25,8 +26,9 @@ const UserRow = ({user, currentUser, setCurrentUserData, setList, list, table, v
             
             setFollowStatus(false)
         }
-        
-    },[user, currentUser, list])
+    }
+
+    },[user, currentUser, list, table])
       
  
             
@@ -83,6 +85,17 @@ const UserRow = ({user, currentUser, setCurrentUserData, setList, list, table, v
                 };
                 return fetch(`${server}/following/${viewedProfile}`, config);
             }
+            else if (table === 'members'){
+                const config = {
+                    credentials: 'include',
+                    method: "GET",
+                    headers: {
+                        "Content-Type": "application/json",
+                    }
+                };
+                return fetch(`${server}/members/${viewedProfile}`, config);
+            }
+            
            
         })
         .then(response => {
@@ -118,7 +131,7 @@ const UserRow = ({user, currentUser, setCurrentUserData, setList, list, table, v
   <h2 className="card-title">{userData.display_name}</h2></Link>
     <p className='card-body p-0' >{userData.catchphrase}</p> 
     <div className="card-actions justify-end">
-        {followStatus === 'currentUser'? (<></>):(
+        {followStatus === 'currentUser' || table === 'query'? (<></>):(
             
             <button onClick={()=>{handleFollow(userData.id)}} className="btn btn-secondary btn-xs">{followStatus? 'Unfollow':'Follow' }</button>
         )}

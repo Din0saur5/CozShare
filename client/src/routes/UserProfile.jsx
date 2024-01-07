@@ -20,6 +20,7 @@ const UserProfile = () => {
     fetch(`${server}/users/${id}`, config)
       .then(res=>res.json())
       .then(data=>{
+        console.log(data)
         setViewUserData(data)
       })
   // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -30,7 +31,58 @@ const UserProfile = () => {
    
     const { display_name, catchphrase, profile_pic, bio } = viewUserData
    
-    const [activeTab, setActiveTab] = useState('posts');
+    const [activeTab, setActiveTab] = useState('Posts');
+    const [followStatus, setFollowStatus] = useState(false)
+
+    useEffect(()=>{
+     
+      if(userDataO.id == viewUserData.id){
+          setFollowStatus('currentUser')
+      } else if (viewUserData.followers &&  viewUserData.followers.includes(userDataO.id)){
+          
+          setFollowStatus(true)
+      }
+      else{
+          
+          setFollowStatus(false)
+      }
+  },[userDataO, id, viewUserData])
+    
+
+
+    function handleFollow( targetUserId) {
+      const url = `${server}/handle_follows`; // Adjust this to your server's URL
+      const data = {
+          target_user_id: targetUserId
+      };
+  
+      fetch(url, {
+          method: 'POST',
+          credentials: 'include', // Include credentials for cookies, authentication.
+          headers: {
+              'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(data)
+      })
+      .then(response => {
+          if (!response.ok) {
+              throw new Error(`HTTP error! Status: ${response.status}`);
+          }
+          return response.json();
+      })
+      .then(data => {
+          if(data.action ==="followed"){
+              setFollowStatus(true);
+          } else {
+              setFollowStatus(false);
+          }
+          setViewUserData(data.target);
+          setUserData(data.user);
+          setUserDataO(data.user)
+          return data;
+      })
+    }
+
 
   
 
@@ -88,6 +140,16 @@ const UserProfile = () => {
     
       </div>
       <div className="relative rounded-tl-lg bg-base-300 p-4 mx-4 h-full min-h-screen border border-third rounded-b-lg">
+        {activeTab==='Posts'?
+          (
+            <>
+           <div style={{textShadow: "0 0 15px #a991f7 , 0 0 15px #fff "}} className=" divider divider-secondary  ">Posts</div>
+           <button onClick={()=>{handleFollow(id)}} className="btn btn-secondary btn-sm" >{followStatus? 'Unfollow':'Follow' }</button>
+           </>
+           )
+          :(<></>)
+        }
+
             <ProfileLayout activeTab={activeTab} userData={userDataO} setUserData={setUserDataO} viewedProfile={id}/>
         </div>
       </div>

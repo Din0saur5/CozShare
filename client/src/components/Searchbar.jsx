@@ -35,10 +35,16 @@ function SearchBar({follows}) {
       return str;
     }
   }
+  const handleSearch = (e) => {
+    e.preventDefault()
+    const query = searchVal.replace(/\s+/g, '%');
+    navigate(`/search/${query}`)
+  }
+  
 
     
     return (
-        <form>   
+        <form onSubmit={(e)=>{handleSearch(e)}}>   
         <label htmlFor="search" className="mb-2 text-sm font-medium sr-only ">Search</label>
         <div className="relative">
             <div className="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
