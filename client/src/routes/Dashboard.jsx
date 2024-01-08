@@ -4,6 +4,7 @@ import Sidebar from '../components/Sidebar'
 import AOS from 'aos';
 const Dashboard = () => {
    const [userData, setUserData] = useOutletContext()
+   const [userDataO, setUserDataO] = useState(userData)
    const [posts, setPosts] = useState([]);
    const [loadMoreCount, setLoadMoreCount] = useState(9);
    const [isFetching, setIsFetching] = useState(false);
@@ -12,7 +13,6 @@ const Dashboard = () => {
 
     const fetchRecipes = async (limit, offset) => {
       const server = import.meta.env.VITE_BACK_END_SERVE;
-  
   
       setIsFetching(true);
       try {
@@ -35,8 +35,11 @@ const Dashboard = () => {
       fetchRecipes(loadMoreCount, 0);
     }, []);
   
+  
+
     useEffect(() => {
       AOS.init({ duration: 1000, once: true });
+      
     }, []);
   
     const loadMoreOnScroll = useCallback(() => {
@@ -56,7 +59,7 @@ const Dashboard = () => {
     <div className='fixed z-0 h-full w-full bg-primary'>
 
     </div>
-      <Sidebar userData={userData} setUserData={setUserData}  />
+      <Sidebar userData={userDataO} setUserData={setUserDataO} setUserDataHO={setUserData} />
       </>
   )
 }

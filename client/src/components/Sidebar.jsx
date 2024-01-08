@@ -7,7 +7,7 @@ import SearchBar from './Searchbar';
 import { VscFeedback } from "react-icons/vsc";
 import { themeChange } from 'theme-change';
 
-const Sidebar = ({userData, setUserData}) => {
+const Sidebar = ({userData, setUserData , setUserDataHO}) => {
     const navigate = useNavigate()
     const [drawerOpen, setDrawerOpen] = useState(false)
     const server = import.meta.env.VITE_URL
@@ -93,13 +93,14 @@ const Sidebar = ({userData, setUserData}) => {
         setUserData(null);
         fetch(`${server}/logout`, {
             method: "DELETE",
-            credentials: 'include' // if you're using cookies for session management
+            credentials: 'include' 
         })
         .then(response => {
             if (response.ok) {
                 
-                setUserData(null);
-                navigate("/");
+                navigate("/")
+                .then(setUserDataHO(null))
+                .then(setUserData(null))
             } else {
                 // Handle logout failure (e.g., show error message)
                 console.error('Logout failed:', response.status);

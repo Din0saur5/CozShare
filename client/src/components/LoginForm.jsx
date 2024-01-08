@@ -36,7 +36,7 @@ const LoginForm = () => {
   const navigate = useNavigate()
 
     const handleSubmit = (values, { setSubmitting }) => {
-      
+
       const url = `${server}/login`; // Change this URL to your actual server endpoint
   
       fetch(url, {
@@ -52,6 +52,7 @@ const LoginForm = () => {
       })
       .then(response => { if(response.ok){
         navigate('/dashboard')
+        
         } else{
           throw new Error("HTTP error " + response.status)
         }
@@ -62,6 +63,7 @@ const LoginForm = () => {
       })
       .finally(() => {
         setSubmitting(false); // Stop the submission process
+        
       });
     };
   

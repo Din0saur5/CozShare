@@ -17,10 +17,11 @@ const MembersTable = ({memberList, userData, setUserData, viewedProfile, setMemb
   
     {/* head */}
     <div style={{textShadow: "0 0 15px #e3d2de , 0 0 15px #e3d2de "}} className=" divider divider-secondary ">Members {memberList.length}</div>
+    
     <div className='grid md:grid-cols-2 lg:grid-cols-1  xl:grid-cols-2 2xl:grid-cols-3 overflow-x-hidden'>
     {// eslint-disable-next-line react/prop-types
     memberList? (memberList.map(user=>{ 
-        return <UserRow  key={user.id} user={user} currentUser={userData} setList={setMemberList} list={memberList} table={'members'} setCurrentUserData={setUserData} viewedProfile={viewedProfile}/>
+        return <UserRow  key={user.id} user={user} currentUser={userData} setList={setMemberList} list={memberList} table={'members'} setCurrentUserData={setUserData} viewedProfile={viewedProfile.id}/>
     })
       ):<small>no followers</small>
 }

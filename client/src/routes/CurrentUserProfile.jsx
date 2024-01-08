@@ -81,7 +81,7 @@ const CurrentUserProfile = () => {
             <div className="hidden sm:block label">
                 <span className="label-text ">Your Bio:</span>
             </div>
-            <textarea className=" peer focus:right-1/4 focus:absolute focus:z-10 sm:focus:static  w-54 -ml-52 sm:ml-auto sm:w-96 rounded-xl textarea textarea-ghost line-clamp-2 focus:line-clamp-[10]" value={bioCurrent} onChange={(e)=>handleChangeBio(e)} placeholder='set your catchphrase'></textarea>
+            <textarea className=" peer focus:right-1/4 focus:absolute focus:z-10 sm:focus:static  w-54 -ml-52 sm:ml-auto sm:w-96 rounded-xl textarea textarea-ghost line-clamp-2 focus:line-clamp-[10]" value={bioCurrent} onChange={(e)=>handleChangeBio(e)} placeholder='set your bio'></textarea>
             <button type='submit' className={`${showSubmitBio? 'visible': 'hidden'} peer-focus:right-1/4 peer-focus:z-10 peer-focus:absolute border p-1 rounded ml-2 border-secondary` }><FaPaintBrush /></button>
         </form>
     </div>

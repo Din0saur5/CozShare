@@ -10,7 +10,7 @@ const Event = () => {
     const [viewEvent, setEvent] = useState({})
     const [userDataO, setUserDataO] = useState(userData) 
     const [memberList, setMemberList] = useState([{}])
-    const [activeTab, setActiveTab] = useState('posts');
+    const [activeTab, setActiveTab] = useState('Posts');
 
     useEffect(()=>{
       const config = {

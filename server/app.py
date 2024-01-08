@@ -3,6 +3,7 @@ from flask import Flask, request, session, render_template, make_response
 from flask_restful import Resource
 from config import app, db, api
 from models import User, Post, Comment, Event, EventPosts, Members, PostComment
+from sqlalchemy import and_
 from sqlalchemy.exc import IntegrityError
 import uuid
 import random
@@ -39,6 +40,7 @@ class Signup(Resource):
         )
         new_user.password_hash = password
         try:
+            
             db.session.add(new_user)
             db.session.commit()
             session['user_id'] = new_user.id
@@ -80,7 +82,7 @@ class Logout(Resource):
     if session.get('user_id'):
         session['user_id'] = None
         response = make_response({}, 204)
-        response.set_cookie('id', '', expires=0)  # Clear the 'id' cookie
+        response.set_cookie('id', '', expires=0, path='/',)  # Clear the 'id' cookie
         return response
     return {'error': 'Unauthorized'}, 401
   
@@ -407,6 +409,8 @@ class MembersByEventId(Resource):
         membersData.append(memberData.to_dict(rules=('-email', '-bio')))
       return make_response(membersData,200)
     
+  
+    
     
 class SearchResource(Resource):
     def post(self, search_type):
@@ -428,7 +432,22 @@ class SearchResource(Resource):
         return make_response([item.to_dict() for item in results], 200)
 
 
+class DeleteMember(Resource):
+    def delete(self, user_id, event_id):
+        member = Members.query.filter(
+            and_(Members.user_id == user_id, Members.event_id == event_id)
+        ).first()
 
+        if member:
+            db.session.delete(member)
+            db.session.commit()
+            return make_response({"message": "member deleted"}, 204)
+        else:
+            rb = {"error": "Member not found"}
+            return make_response(rb, 404)
+    
+    
+api.add_resource(DeleteMember, '/delete_member/<uuid:user_id>/<uuid:event_id>')
 api.add_resource(SearchResource, '/search/<string:search_type>')
 api.add_resource(MembersByEventId, '/members/<uuid:id>')    
 api.add_resource(GetGroupsByUserId, '/eventsByUser/<uuid:id>')
