@@ -19,9 +19,9 @@ class User(db.Model, SerializerMixin):
 
    # Relationship to Posts
    posts = db.relationship('Post', back_populates='user', cascade='all, delete-orphan')
-   # Relationship to Comments through the PostComments intermediary
+   
    comments = db.relationship('Comment', back_populates='user', cascade='all, delete-orphan')
-   owned_events = db.relationship('Event', back_populates='admin')
+   owned_events = db.relationship('Event', back_populates='admin', cascade='all, delete-orphan')
    events = db.relationship('Event', secondary='members' ,back_populates='users')
    
    # Serialize Rules
@@ -57,18 +57,18 @@ class Post(db.Model, SerializerMixin):
    __tablename__ = 'posts'
     
    id = db.Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
-   user_id = db.Column(UUID(as_uuid=True), db.ForeignKey('users.id'), nullable=False)
+   user_id = db.Column(UUID(as_uuid=True), db.ForeignKey('users.id', ondelete='CASCADE'), nullable=False)
    post_type = db.Column(db.Integer)
    media = db.Column(db.ARRAY(db.TEXT))
    caption = db.Column(db.TEXT)
    likes = db.Column(db.ARRAY(db.TEXT))
    created = db.Column(db.DateTime, index=True, server_default=db.func.now())
-
+   event_id = db.Column(UUID(as_uuid=True), db.ForeignKey('events.id', ondelete='CASCADE'), nullable=True)
    
    user = db.relationship('User', back_populates='posts')
    
-   comments = db.relationship('Comment', secondary='post_comments', back_populates='post', )
-   events = db.relationship('Event', secondary='event_posts', back_populates='posts')
+   comments = db.relationship('Comment', back_populates='post', cascade='all, delete-orphan')
+   events = db.relationship('Event', back_populates='posts')
    # Serialize Rules
    serialize_rules = ('-user.posts', '-comments.post','-events.posts','-comments.user')
    
@@ -77,33 +77,24 @@ class Comment(db.Model, SerializerMixin):
    __tablename__ = 'comments'
    
    id = db.Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
-   user_id = db.Column(UUID(as_uuid=True), db.ForeignKey('users.id'), nullable=False)
+   user_id = db.Column(UUID(as_uuid=True), db.ForeignKey('users.id', ondelete='CASCADE'), nullable=False)
+   post_id = db.Column(UUID(as_uuid=True), db.ForeignKey('posts.id', ondelete='CASCADE'), nullable=False)
    comment = db.Column(db.Text)
    upvotes = db.Column(db.Integer)
    created = db.Column(db.DateTime, server_default=db.func.now())
    
    user = db.relationship('User', back_populates='comments')
-   post = db.relationship('Post', secondary='post_comments', back_populates='comments')
+   post = db.relationship('Post', back_populates='comments')
    
    # Serialize Rules
    serialize_rules = ('-user.comments', '-post.comments')
-   
-   
-# PostComments Model (association table)
-class PostComment(db.Model, SerializerMixin):
-   __tablename__ = 'post_comments'
-    
-   id = db.Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
-   post_id = db.Column(UUID(as_uuid=True), db.ForeignKey('posts.id'), nullable=False)
-   comment_id = db.Column(UUID(as_uuid=True), db.ForeignKey('comments.id'), nullable=False)
-   
-   
+
    
 class Event(db.Model, SerializerMixin):
    __tablename__ = 'events'
    
    id = db.Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
-   admin_id = db.Column(UUID(as_uuid=True), db.ForeignKey('users.id'), nullable=False)
+   admin_id = db.Column(UUID(as_uuid=True), db.ForeignKey('users.id', ondelete='CASCADE'), nullable=False)
    created = db.Column(db.DateTime, server_default=db.func.now())
    eventTime= db.Column(db.DateTime, nullable=False)
    profile_pic = db.Column(db.Text, nullable=False)
@@ -113,19 +104,11 @@ class Event(db.Model, SerializerMixin):
    
    admin = db.relationship('User', back_populates='owned_events')
    users = db.relationship('User', secondary='members', back_populates='events')
-   posts = db.relationship('Post', secondary='event_posts', back_populates='events')
+   posts = db.relationship('Post', back_populates='events')
 
    serialize_rules = (
         '-users', '-posts', '-admin.owned_events', '-admin.events'
     )
-class EventPosts(db.Model, SerializerMixin):
-   __tablename__ = 'event_posts'
-   
-   id = db.Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
-   event_id = db.Column(UUID(as_uuid=True), db.ForeignKey('events.id', ondelete='CASCADE'), nullable=False)
-   post_id = db.Column(UUID(as_uuid=True), db.ForeignKey('posts.id', ondelete='CASCADE'), nullable=False)
-   
-   
 class Members(db.Model, SerializerMixin):
    __tablename__ = 'members'
    

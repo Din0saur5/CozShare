@@ -50,14 +50,14 @@ const EventsTable = ({userData, setUserData, viewedProfile}) => {
     <div style={{textShadow: "0 0 15px #a991f7 , 0 0 15px #fff "}} className=" divider divider-secondary  ">Joined Events {eventList.length}</div>
     {userData.id === viewedProfile?( 
                 <div className='flex flex-row-reverse mr-2 mt-2'>
-                    <EventCreateForm userData={userData} setUserData={setUserData}/>
+                    <EventCreateForm userData={userData} setUserData={setUserData} list={eventList} setEventList={setEventList}/>
                 </div>
                  ):(<></>)} {/*<div className='mr-2 mt-2 w-full h-12'></div>*/}
     <div className='grid md:grid-cols-2 lg:grid-cols-1  xl:grid-cols-2 2xl:grid-cols-3 overflow-x-hidden'>
     {eventList? (eventList.map(event=>{
         return <EventRow  key={event.id} event={event}/>
     })
-      ):<small>no followers</small>
+      ):<small>no events</small>
 }
     </div>
    

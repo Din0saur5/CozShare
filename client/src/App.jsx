@@ -1,9 +1,9 @@
 
-import * as React from "react";
+
 import { createRoot } from "react-dom/client";
 import {
         createBrowserRouter,
-        redirect,
+        
         RouterProvider,
         
       } from "react-router-dom";

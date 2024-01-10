@@ -37,7 +37,7 @@ const LoginForm = () => {
 
     const handleSubmit = (values, { setSubmitting }) => {
 
-      const url = `${server}/login`; // Change this URL to your actual server endpoint
+      const url = `${server}/login`; 
   
       fetch(url, {
         method: 'POST',
@@ -45,24 +45,24 @@ const LoginForm = () => {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          email: values.email, // Make sure this matches with your backend expected field
+          email: values.email, 
           password: values.password
         }),
-        credentials: 'include' // if you're handling sessions
+        credentials: 'include' 
       })
       .then(response => { if(response.ok){
-        navigate('/dashboard')
-        
+       navigate('/dashboard')
+       navigate('/dashboard') 
         } else{
           throw new Error("HTTP error " + response.status)
         }
       })
       .catch((error) => {
         console.error('Login Error:', error);
-        // Handle login error here (e.g., show error message)
+        
       })
       .finally(() => {
-        setSubmitting(false); // Stop the submission process
+        setSubmitting(false);
         
       });
     };

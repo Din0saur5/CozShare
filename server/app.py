@@ -2,8 +2,8 @@
 from flask import Flask, request, session, render_template, make_response
 from flask_restful import Resource
 from config import app, db, api
-from models import User, Post, Comment, Event, EventPosts, Members, PostComment
-from sqlalchemy import and_
+from models import User, Post, Comment, Event, Members
+from sqlalchemy import and_, text
 from sqlalchemy.exc import IntegrityError
 import uuid
 import random
@@ -78,13 +78,15 @@ class CheckDisplayName(Resource):
             return {}, 200
 
 class Logout(Resource):
-  def delete(self):
-    if session.get('user_id'):
-        session['user_id'] = None
-        response = make_response({}, 204)
-        response.set_cookie('id', '', expires=0, path='/',)  # Clear the 'id' cookie
-        return response
-    return {'error': 'Unauthorized'}, 401
+    def delete(self):
+        if session.get('user_id'):
+            session['user_id'] = None 
+            session.pop('user_id', None)
+            response = make_response({"message": "Logged out successfully"}, 200)
+            response.set_cookie('id', '', expires=0, path='/', httponly=True)  # Clear the 'id' cookie
+            return response
+        return make_response({'error': 'Unauthorized'}, 401)
+
   
   
 class UserById(Resource):
@@ -123,17 +125,7 @@ class UserById(Resource):
         rb = {"error": "User not found"}
         return make_response(rb, 404)
   
-  def delete(self, id):
-    u = User.query.filter(User.id == id).first() 
-    if u:
-        db.session.delete(u)
-        db.session.commit()
-        return make_response({}, 204)
-    else:
-        rb = {
-            "error": "User not found"
-        }
-        return make_response(rb, 404)
+ 
       
 class GetFollowers(Resource):
   def get(self, id):
@@ -336,7 +328,8 @@ class AllPost(Resource):
             post_type=data['post_type'],
             media=data['media'],
             caption=data['caption'],
-            likes=data['likes']
+            likes=data['likes'],
+            event_id=data.get('event_id')
         )
         db.session.add(new_post)
         db.session.commit()
@@ -349,26 +342,6 @@ class AllPost(Resource):
         db.session.rollback()
         return make_response({'error': 'Error creating post'}, 500)
 
-class CreateEventPost(Resource):
-    def post(self):
-        data = request.get_json()
-        print("Received event-post data:", data)
-
-        try:
-            new_event_post = EventPosts(
-                event_id=uuid.UUID(data['event_id']),
-                post_id=uuid.UUID(data['post_id'])
-            )
-            db.session.add(new_event_post)
-            db.session.commit()
-            print("New event-post entry created:", new_event_post.id)
-
-            response_data = new_event_post.to_dict()
-            return make_response(response_data, 201)
-        except Exception as e:
-            print("Error creating event-post entry:", e)
-            db.session.rollback()
-            return make_response({'error': 'Error creating event-post entry'}, 500)
 
 class GetGroupsByUserId(Resource):
   def get(self, id):
@@ -445,14 +418,93 @@ class DeleteMember(Resource):
         else:
             rb = {"error": "Member not found"}
             return make_response(rb, 404)
-    
-    
+
+class UpdatePassword(Resource):
+    def patch(self):
+        data = request.json
+        old_password = data.get('oldPassword')
+        new_password = data.get('newPassword')
+
+        user_id = session.get('user_id')
+        if not user_id:
+            return make_response({"error": "User not authenticated"}, 401)
+
+        user = User.query.filter_by(id=user_id).first()
+
+
+        # Check if user exists and old password is correct
+        if user and user.authenticate(old_password):
+            #hashing is done via models
+            user.password_hash = new_password
+
+            try:
+                db.session.commit()
+                return make_response({"message": "Password updated successfully"}, 200)
+            except IntegrityError:
+                db.session.rollback()
+                return make_response({"error": "Failed to update password"}, 500)
+        else:
+            return make_response({"error": "Invalid credentials"}, 401)
+
+
+class DeleteAccount(Resource):
+    def delete(self):
+        user_id = session.get('user_id')
+        if not user_id:
+            return make_response({"error": "User not found"}, 404)
+        user = db.session.get(User, user_id)  
+        if not user:
+            return make_response({"error": "User not found"}, 404)
+        try:
+           # Convert user.following and user.followers to lists of strings if they are UUIDs
+          following_ids = [uuid.UUID(uid) for uid in user.following]
+          followers_ids = [uuid.UUID(uid) for uid in user.followers]
+
+          # Remove the user's id from the followers' list of all users they are following
+          db.session.execute(text(
+              "UPDATE users SET followers = array_remove(followers, :user_id) WHERE id = ANY(:following)"
+          ), {'user_id': str(user_id), 'following': following_ids})
+
+          # Remove the user's id from the following list of all users that follow them
+          db.session.execute(text(
+              "UPDATE users SET following = array_remove(following, :user_id) WHERE id = ANY(:followers)"
+          ), {'user_id': str(user_id), 'followers': followers_ids})
+          db.session.delete(user)
+          db.session.commit()
+          return make_response({"message": "Account deleted successfully"}, 200)
+        except Exception as e:
+          db.session.rollback()
+          print(e)
+          return make_response({"error": f"Failed to delete account: {e}"}, 500)
+
+class GetPostsByUserId(Resource):
+  def get(self, id):
+    posts = Post.query.filter(Post.user_id == id).all()
+    if not posts:
+      return {'error': 'Posts not found'}, 404
+    else:
+      rb = [post.to_dict() for post in posts if post.event_id is None]
+      return make_response(rb,200)
+
+class GetPostsByEventId(Resource):
+  def get(self, id):
+    posts = Post.query.filter(Post.event_id == id).all()
+    if not posts:
+      return {'error': 'Posts not found'}, 404
+    else:
+      rb = [post.to_dict() for post in posts]
+      return make_response(rb, 200)
+
+
+api.add_resource(GetPostsByEventId, '/posts_by_event/<uuid:id>')
+api.add_resource(GetPostsByUserId, '/posts_by_user/<uuid:id>')
+api.add_resource(DeleteAccount, '/delete_account')    
+api.add_resource(UpdatePassword, '/update_password')    
 api.add_resource(DeleteMember, '/delete_member/<uuid:user_id>/<uuid:event_id>')
 api.add_resource(SearchResource, '/search/<string:search_type>')
 api.add_resource(MembersByEventId, '/members/<uuid:id>')    
 api.add_resource(GetGroupsByUserId, '/eventsByUser/<uuid:id>')
 api.add_resource(EventsById, '/events/<uuid:id>')
-api.add_resource(CreateEventPost, '/event-posts')
 api.add_resource(AllPost, '/posts')    
 api.add_resource(AllMembers, '/members')    
 api.add_resource(CreateEvent, '/events')

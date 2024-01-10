@@ -3,6 +3,7 @@
 import FollowersTable from './FollowersTable'
 import FollowingTable from './FollowingTable'
 import EventsTable from './EventsTable'
+import PostsTable from './PostTable'
 
 const ProfileLayout = ({activeTab, userData, setUserData, viewedProfile}) => {
 
@@ -23,9 +24,9 @@ const ProfileLayout = ({activeTab, userData, setUserData, viewedProfile}) => {
             )
         case 'Posts':
             return(
-                <div> 
-                    posts
-                </div>
+                <> 
+                    <PostsTable userData={userData} setUserData={setUserData} viewedProfile={viewedProfile}/>
+                </>
             )
                 
             

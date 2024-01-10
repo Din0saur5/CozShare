@@ -1,15 +1,17 @@
+/* eslint-disable react-hooks/rules-of-hooks */
 import  { useCallback, useEffect, useState } from 'react'
-import { useOutletContext } from 'react-router-dom'
+import {  useNavigate, useOutletContext } from 'react-router-dom'
 import Sidebar from '../components/Sidebar'
 import AOS from 'aos';
 const Dashboard = () => {
    const [userData, setUserData] = useOutletContext()
+   if (userData){
    const [userDataO, setUserDataO] = useState(userData)
    const [posts, setPosts] = useState([]);
    const [loadMoreCount, setLoadMoreCount] = useState(9);
    const [isFetching, setIsFetching] = useState(false);
    const [hasMorePosts, setHasMorePosts] = useState(true);
-    console.log(userData)
+  
 
     const fetchRecipes = async (limit, offset) => {
       const server = import.meta.env.VITE_BACK_END_SERVE;
@@ -40,6 +42,8 @@ const Dashboard = () => {
     useEffect(() => {
       AOS.init({ duration: 1000, once: true });
       
+      
+
     }, []);
   
     const loadMoreOnScroll = useCallback(() => {
@@ -62,6 +66,8 @@ const Dashboard = () => {
       <Sidebar userData={userDataO} setUserData={setUserDataO} setUserDataHO={setUserData} />
       </>
   )
+} else{
+  location.reload()
 }
-
+}
 export default Dashboard

@@ -12,7 +12,7 @@ const CurrentUserProfile = () => {
     const [bioCurrent, setBioCurrent] = useState(bio)
     const [showSubmitBio, setShowSubmitBio] = useState(false)
     const [errors, setErrors] = useState([]) 
-    const [activeTab, setActiveTab] = useState('posts');
+    const [activeTab, setActiveTab] = useState('Posts');
     
     const handleChangeBio = (e) => {
         setBioCurrent(e.target.value)
