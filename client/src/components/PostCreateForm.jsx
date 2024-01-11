@@ -5,14 +5,13 @@ import supabase from './supabaseClient'
 import { createPost } from './CreatePost'
 import Toast from './Toast'
 import MediaUploader from './MediaUploader'
-const PostCreateForm = ({userData, SetUserData, list, setPostList}) => {
+const PostCreateForm = ({userData, SetUserData, list, setPostList, event=null}) => {
 
-    const server = import.meta.env.VITE_URL
+
 
     const [loading, setLoading] = useState(false)
     const [toastVisible,setToastVisible] = useState(false)
     const [mediaSrc, setMediaSrc] = useState([])
-    const [show, setShow] = useState(false)
     const [step, setStep] = useState(1)
     const [showModal, setShowModal] = useState(false)
     const [currentInput, setCurrentInput] = useState('');
@@ -168,7 +167,7 @@ const chooseMedia = () => {
        if (postType === 1){
 
         try{
-           data =  createPost(userData.id,1,mediaSrc,caption)
+           data =  createPost(userData.id,1,mediaSrc,caption, event)
         } catch (error){
             console.error('Error in making post:', error);
         }} else if (postType === 2){
@@ -185,7 +184,7 @@ const chooseMedia = () => {
             
                 console.log(finalURLArray);
                 
-                data = createPost(userData.id, 2, finalURLArray, caption);
+                data = createPost(userData.id, 2, finalURLArray, caption, event);
                 
         }  
         setLoading(false)
