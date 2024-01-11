@@ -89,12 +89,12 @@ const PostsTable = ({userData, setUserData, viewedProfile, type}) => {
     <div  className="h-full overflow-x-auto ">
   
     {/* head */}
-    <div style={{textShadow: "0 0 15px #a991f7 , 0 0 15px #fff "}} className=" divider divider-secondary  ">Joined Events {postList.length}</div>
+    <div style={{textShadow: "0 0 15px #a991f7 , 0 0 15px #fff "}} className=" divider divider-secondary  ">Posts {postList.length}</div>
     {postAuth()}
 
     <div className='grid md:grid-cols-2 lg:grid-cols-1  xl:grid-cols-2 2xl:grid-cols-3 overflow-x-hidden'>
-    {postList? (postList.map(event=>{
-        return <PostRow  key={event.id} event={event}/>
+    {postList? (postList.map(post=>{
+        return <PostRow  key={post.id} post={post}/>
     })
       ):<small>no posts</small>
 }

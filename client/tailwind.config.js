@@ -1,3 +1,4 @@
+/* eslint-disable no-undef */
 /** @type {import('tailwindcss').Config} */
 export default {
   content: ['./src/**/*.{js,ts,jsx,tsx}', "./node_modules/tailwind-datepicker-react/dist/**/*.js", ],
@@ -26,6 +27,9 @@ export default {
       },
       colors: {
         third: '#af4670',
+      },
+      aspectRatio: {
+        '3/2': '3 / 2',
       },
 
 

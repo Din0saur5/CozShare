@@ -1,12 +1,11 @@
 const server = import.meta.env.VITE_URL
-export function createPost(userId, postType, media, caption, likes, event_id=null) {
+export function createPost(userId, postType, media, caption, event_id=null) {
     const url = `${server}/posts`; // Replace with your actual API endpoint
     const postData = {
         user_id: userId,
         post_type: postType,
         media: media,
         caption: caption,
-        likes: likes,
         event_id: event_id
     };
 

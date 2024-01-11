@@ -1,11 +1,11 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable react/prop-types */
 import  { useState } from 'react'
-
-import Datepicker from "tailwind-datepicker-react"
+import supabase from './supabaseClient'
 import { createPost } from './CreatePost'
 import Toast from './Toast'
-const PostCreateForm = ({userData, SetUserData, list, setEventList}) => {
+import MediaUploader from './MediaUploader'
+const PostCreateForm = ({userData, SetUserData, list, setPostList}) => {
 
     const server = import.meta.env.VITE_URL
 
@@ -18,11 +18,17 @@ const PostCreateForm = ({userData, SetUserData, list, setEventList}) => {
     const [currentInput, setCurrentInput] = useState('');
     const [caption, setCaption] = useState('');
     const [postType, setPostType] = useState(0);
+    const [showUploader, setShowUploader] = useState(false);
+    
+
+
+
 
     const handlePostTypeChange = (event) => {
         setPostType(+event.target.value);
     };
     function convertYouTubeUrlToEmbedUrl(url) {
+        // eslint-disable-next-line no-useless-escape
         const regExp = /^.*(youtu\.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
         const match = url.match(regExp);
     
@@ -55,12 +61,32 @@ const PostCreateForm = ({userData, SetUserData, list, setEventList}) => {
     
     } 
        
-    };
-    const handleCaptionChange = (event) => {
-        setCaption(event.target.value);
-    };
+    
+    
+    
+};
+const handleCaptionChange = (event) => {
+    setCaption(event.target.value);
+};
 
-    const chooseMedia = () => {
+const chooseMedia = () => {
+        const handleUploaderOpen = (e) => {
+            e.preventDefault()
+            setShowUploader(true);
+        };
+           
+        const handleMediaConfirm = (media) => {
+            setMediaSrc([...mediaSrc, media]);
+            setShowUploader(false);
+            setCurrentInput('')
+            document.getElementById('filePicker').value =''
+        };
+        const removeImg = (e, img) =>{
+            e.preventDefault()
+            setMediaSrc(mediaSrc.filter(imgE => imgE !== img))
+
+        }
+
       if (postType === 1){
               return  (<div>
                 
@@ -69,24 +95,171 @@ const PostCreateForm = ({userData, SetUserData, list, setEventList}) => {
                     <label>YouTube URL:
                         <input className='input input-primary mx-4 mt-4 ' type="text" name="youtubeUrl" value={currentInput} onChange={handleMediaSrcInput}/>
                     </label>{ mediaSrc.length<1?
-                    (<button className='btn btn-primary btn-sm mt-4 '  onClick={(e)=>handleAddItem(e)}>Add</button>):(
+                    (<button className='btn btn-primary btn-sm mt-4 shadow-inner shadow-white text-white'  onClick={(e)=>handleAddItem(e)}>Add</button>):(
                        <>
-                        <button className='btn btn-secondary btn-sm mt-4 '  onClick={(e)=>{ e.preventDefault(); setMediaSrc([])}}>Clear</button>
-                        <button className='btn btn-primary btn-sm mt-4' onClick={()=>{setStep(3)}}>Next</button>
+                        <button className='btn btn-secondary btn-sm mt-4 mr-1 shadow-inner shadow-white text-white'  onClick={(e)=>{ e.preventDefault(); setMediaSrc([])}}>Clear</button>
+                        <button className='btn btn-primary btn-sm mt-4 shadow-inner shadow-white text-white' onClick={()=>{setStep(3)}}>Next</button>
                         </>
                     )
                     }
                 </div>)
       } else if (postType === 2){
-             return   (<div>
-                    <label>Image:
-                        <input type="file" name="image" accept="image/*" />
-                    </label>
-                    {/* Add other fields specific to Image post */}
+             return   (
+                <div>
+                    { !!mediaSrc.length &&  (mediaSrc.map(img =>{
+                        console.log(mediaSrc)
+                        return (
+                        <div key={img.name} className='flex flex-row mb-2'>
+                        <p className='text-secondary italic'>{img.name}</p>
+                        <button onClick={(e)=>{removeImg(e, img)}} className='bg-error rounded-lg btn btn-xs px-1 text-xs ml-2'>remove</button>
+                        </div>
+                        )
+                    })
+                            )
+                         
+                    }
+
+                    
+                    <input className="file-input file-input-bordered file-input-sm w-full max-w-xs" onChange={handleFileChange} type="file" name="image" accept="image/*" id='filePicker' />
+                    <button onClick={(e)=>{handleUploaderOpen(e)}} className='btn btn-accent btn-sm mt-2 '>Edit & Add</button>
+                    <br/>
+                    <small>Add images one at a time but up to 10 total</small>
+                    {mediaSrc.length > 0 && ( 
+                    <div className='flex flex-row-reverse'>
+                        <button className=' btn btn-primary btn-sm mt-4 ml-2 text-base-100 shadow-inner shadow-white' onClick={()=>{setStep(3)}}>Next</button>
+                    </div>
+                    )}
+                    {showUploader? (<MediaUploader visible={showUploader} setVisible={setShowUploader} imgSrc={currentInput} handleMediaConfirm={handleMediaConfirm} />):(<></>)}
                 </div>)
       }
     }
     
+    async function uploadFile(file) {
+        const fileExt = file.name.split('.').pop();
+        const fileName = `${file.name.split('.').shift()}${Math.random()}.${fileExt}`;
+
+        const fileBlob = await getBlobFromUrl(file.url)
+
+
+        const { data, error } = await supabase.storage.from('posts').upload(fileName, fileBlob);
+    
+        if (error) {
+            throw error;
+        }
+        return data;
+    }
+    async function getBlobFromUrl(blobUrl) {
+        try {
+          const response = await fetch(blobUrl);
+          const fileBlob = await response.blob();
+          return fileBlob;
+        } catch (error) {
+          console.error('Error fetching the Blob:', error);
+          return null; // or handle the error as needed
+        }
+      }
+      
+
+    const mediaFormatterAndPost = async (e) => {
+        e.preventDefault()
+        setLoading(true)
+        let data
+        console.log('clicked')
+       if (postType === 1){
+
+        try{
+           data =  createPost(userData.id,1,mediaSrc,caption)
+        } catch (error){
+            console.error('Error in making post:', error);
+        }} else if (postType === 2){
+                const finalURLArray = await Promise.all(mediaSrc.map(async (img) => {
+                    try {
+                        const uploadedImage = await uploadFile(img);
+                        const url = `https://mgofmfewguhdxnissjvz.supabase.co/storage/v1/object/public/${uploadedImage.fullPath}`;
+                        return url;
+                    } catch (error) {
+                        console.error('Error in uploading file:', error);
+                        return null; // Return null or handle error as needed
+                    }
+                }));
+            
+                console.log(finalURLArray);
+                
+                data = createPost(userData.id, 2, finalURLArray, caption);
+                
+        }  
+        setLoading(false)
+        clearForm() 
+        setShowModal(false)
+        setToastVisible(true)
+        setPostList([...list , data])
+    };
+  
+    const handleFileChange = (e) => {
+        e.preventDefault()
+        const file = e.target.files[0];
+        if (file && file.type.match('image.*')) {
+            let photoData = {
+                name: '',
+                url: ''
+            }
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                photoData.url = e.target.result
+                // setCurrentInput(e.target.result); // Update the profile_pic state with the file's data URL
+            };
+            reader.readAsDataURL(file);
+            photoData.name = file.name // Store the selected file
+            
+            setCurrentInput(photoData)
+            console.log(photoData)
+        }
+    };
+
+  
+
+    const imagePostPreview = () => {
+      if(mediaSrc.length > 1){
+        return(
+        <>
+            <div className="carousel w-full ">
+                
+                { mediaSrc.map((img, index)=>{
+                        return (<div key={index} id={`item${index}`} className="carousel-item w-full">
+                                    <img src={img.url} alt={img.name} className="w-full aspect-3/2 object-contain" />
+                                </div> )
+                    })}
+            </div>
+            <div className="flex justify-center w-full py-2 gap-2">
+                { mediaSrc.map((img, index)=>{
+                        return <a key={index} href={`#item${index}`} className="btn btn-xs">{index+1}</a>
+                    })}
+                    
+            </div>
+        </>
+      )} else{
+        return(
+        <div className="carousel w-full">
+            <figure>
+            <img src={mediaSrc[0].url} alt={mediaSrc[0].name} className="w-full" />
+            </figure>
+
+        </div>
+      )}
+    }
+    
+
+
+
+const clearForm = () => {
+  setMediaSrc([])
+  setCaption('')
+  setStep(1)
+  setCurrentInput('')
+  setPostType(0)
+
+}
+
 
 
 
@@ -98,7 +271,7 @@ const PostCreateForm = ({userData, SetUserData, list, setEventList}) => {
         <div className="modal-box">
             <form method="dialog">
             {/* if there is a button in form, it will close the modal */}
-            <button onClick={()=>setShowModal(false)} className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
+            <button onClick={()=>{clearForm(); setShowModal(false)}} className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
             </form>
 
             <ul className="steps">
@@ -108,7 +281,7 @@ const PostCreateForm = ({userData, SetUserData, list, setEventList}) => {
             <li className={`cursor-pointer step ${step > 3? 'step-primary':''}`} onClick={()=>{setStep(4)}}>Finalize and Post</li>
             </ul>
 
-            <form className='flex flex-col align-center items-center'>
+            <form onSubmit={(e)=>{mediaFormatterAndPost(e)}} className='flex flex-col align-center items-center'>
             {step === 1? (
                 <>
                 <div  className='mb-4'>
@@ -135,7 +308,7 @@ const PostCreateForm = ({userData, SetUserData, list, setEventList}) => {
                         Image Upload
                     </label>
                 </div>
-                <button className='btn btn-primary btn-sm mt-4 text-base-100' onClick={()=>setStep(2)}>next</button>
+                <button className='btn btn-primary btn-sm mt-4 text-base-100 shadow-inner shadow-white ' onClick={()=>setStep(2)}>next</button>
                 </>
             ):(<></>)}{
             step === 2?
@@ -152,61 +325,48 @@ const PostCreateForm = ({userData, SetUserData, list, setEventList}) => {
                             onChange={handleCaptionChange}
                         />
             
-                        <button className='btn btn-primary btn-sm mt-4 ' onClick={()=>setStep(4)}>Next</button>
+                        <button className='btn btn-primary btn-sm mt-4 text-base-100 shadow-inner shadow-white ' onClick={()=>setStep(4)}>next</button>
                     </div>):(<></>) 
                 }{
                     step === 4?
                         (
-                        <div className="card card-compact w-96 bg-base-100 shadow-xl">
-                            <div className='flex flex-row bg-primary w-full py-2 rounded-t-xl'>
-                            <div className="avatar hover:bg-transparent ml-4">
-                            <div className="w-8 mask mask-hexagon hover:bg-transparent">
-                                <img src={userData.profile_pic} />
+                        <>
+                            <div className="card card-compact w-96 bg-base-100 shadow-xl">
+                                <div className='flex flex-row bg-primary w-full py-2 rounded-t-xl'>
+                                <div className="avatar hover:bg-transparent ml-4">
+                                <div className="w-8 mask mask-hexagon hover:bg-transparent">
+                                    <img src={userData.profile_pic} />
+                                </div>
+                                </div>
+                                <div className='hover:bg-transparent text-base-100 line-clamp-1 ml-4 mt-1'>
+                                {userData.display_name}
+                                </div>
+                                </div>
+                                {postType === 1? (
+                                <figure> <iframe  className="w-full aspect-video" src={mediaSrc[0]}  allowfullscreen></iframe>
+                                </figure>
+                                ):(
+                                    imagePostPreview()
+                                )}
+                                    
+                            <div className="card-body">
+                                {/* <h2 className="card-title">{caption}</h2> */}
+                                <p>{caption}</p>
+                                <div className="card-actions justify-end">
+                                <button onClick={(e)=>{e.preventDefault()}} className=" disabled btn btn-link">view/add comments</button>
+                                </div>
                             </div>
                             </div>
-                            <div className='hover:bg-transparent text-base-100 line-clamp-1 ml-4 mt-1'>
-                            {userData.display_name}
+                            <div className='flex flex-row-reverse w-full mt-2'>
+                                {loading? (
+                                <button className="btn ">
+                                    <span className="loading loading-spinner btn-success "></span>
+                                    loading
+                                </button>):(
+                                <button type='submit' className='btn btn-success btn-sm text-base-100 shadow-inner shadow-white tracking-wide'>Post</button>
+                                )}
                             </div>
-                            </div>
-                            {postType === 1? (
-                               <figure> <iframe  className="w-full aspect-video" src={mediaSrc[0]}  allowfullscreen></iframe>
-                            </figure>
-                            ):(
-                                <>
-                                <figure>
-                                    <div className="carousel w-full">
-                                    <div id="item1" className="carousel-item w-full">
-                                        <img src="https://daisyui.com/images/stock/photo-1625726411847-8cbb60cc71e6.jpg" className="w-full" />
-                                    </div> 
-                                    <div id="item2" className="carousel-item w-full">
-                                        <img src="https://daisyui.com/images/stock/photo-1609621838510-5ad474b7d25d.jpg" className="w-full" />
-                                    </div> 
-                                    <div id="item3" className="carousel-item w-full">
-                                        <img src="https://daisyui.com/images/stock/photo-1414694762283-acccc27bca85.jpg" className="w-full" />
-                                    </div> 
-                                    <div id="item4" className="carousel-item w-full">
-                                        <img src="https://daisyui.com/images/stock/photo-1665553365602-b2fb8e5d1707.jpg" className="w-full" />
-                                    </div>
-                                    </div> 
-                                    </figure>
-                                    <div className="flex justify-center w-full py-2 gap-2">
-                                    <a href="#item1" className="btn btn-xs">1</a> 
-                                    <a href="#item2" className="btn btn-xs">2</a> 
-                                    <a href="#item3" className="btn btn-xs">3</a> 
-                                    <a href="#item4" className="btn btn-xs">4</a>
-                                    </div>
-                                </>
-                            )}
-                                
-                        <div className="card-body">
-                            {/* <h2 className="card-title">{caption}</h2> */}
-                            <p>{caption}</p>
-                            <div className="card-actions justify-end">
-                            <button className=" disabled btn btn-link">view/add comments</button>
-                            </div>
-                        </div>
-                        </div>
-                           
+                        </> 
 
                         ):(<></>) 
                     }

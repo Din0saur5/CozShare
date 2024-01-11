@@ -328,14 +328,14 @@ class AllPost(Resource):
             post_type=data['post_type'],
             media=data['media'],
             caption=data['caption'],
-            likes=data['likes'],
+            likes=[],
             event_id=data.get('event_id')
         )
         db.session.add(new_post)
         db.session.commit()
-        print("New post created:", new_post.id)
 
         response_data = new_post.to_dict()
+        print("New post created:", response_data)
         return make_response(response_data, 201)  # Flask-RESTful converts the dict to JSON
     except Exception as e:
         print("Error creating post:", e)

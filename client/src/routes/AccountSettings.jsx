@@ -1,15 +1,12 @@
 import { useState } from 'react';
 import Sidebar from '../components/Sidebar';
 import { useNavigate, useOutletContext } from 'react-router-dom';
-import { createClient } from '@supabase/supabase-js';
+import supabase from '../components/supabaseClient';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import PasswordUpdateForm from '../components/PasswordUpdateForm';
 import Toast from '../components/Toast';
 
-const supabase_url = import.meta.env.VITE_SUPABASE_URL
-const supabase_key = import.meta.env.VITE_SUPABASE_KEY
-const supabase = createClient(supabase_url, supabase_key);
 
 async function uploadFile(file) {
     const fileExt = file.name.split('.').pop();
