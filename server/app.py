@@ -551,7 +551,7 @@ api.add_resource(DeleteMember, '/api/delete_member/<uuid:user_id>/<uuid:event_id
 api.add_resource(SearchResource, '/api/search/<string:search_type>')
 api.add_resource(MembersByEventId, '/api/members/<uuid:id>')    
 api.add_resource(GetGroupsByUserId, '/api/eventsByUser/<uuid:id>')
-api.add_resource(EventsById, '/apis/events/<uuid:id>')
+api.add_resource(EventsById, '/api/events/<uuid:id>')
 api.add_resource(AllPost, '/api/posts')    
 api.add_resource(AllMembers, '/api/members')    
 api.add_resource(CreateEvent, '/apis')
