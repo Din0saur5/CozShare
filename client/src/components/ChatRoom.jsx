@@ -111,7 +111,7 @@ useEffect(() => {
     // Clean up
     return  supabase.removeAllChannels();
       
-}, [])
+}, [event.id, channel])
   
 
 
