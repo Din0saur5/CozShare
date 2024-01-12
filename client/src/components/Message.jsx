@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from 'react'
+/* eslint-disable react/prop-types */
+import  { useEffect, useState } from 'react'
 
 const Message = ({message}) => {
     const server = import.meta.env.VITE_URL

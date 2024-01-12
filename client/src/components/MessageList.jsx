@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import React, { useEffect, useRef, useState } from 'react';
+import  { useEffect, useRef} from 'react';
 import ClientMessage from './ClientMessage';
 import Message from './Message';
 
