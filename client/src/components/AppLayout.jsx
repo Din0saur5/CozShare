@@ -15,20 +15,25 @@ const AppLayout = () =>{
   let data = useLoaderData(); 
   const [userData, setUserData] = useState(data)
   useEffect(()=>{
-    setUserData(data) 
-  
+    
     if (data === null){
-    navigate('/')
+      navigate('/')
     }
+
+    setUserData(data) 
   },[data, navigate, userData, ])
 
 
     
   
 
-  return (
+  return data?(
     <>
     <Outlet context={[userData, setUserData]} />
+    </>
+  ):(
+    <>
+    <Outlet />
     </>
   )
  

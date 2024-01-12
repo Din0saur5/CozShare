@@ -159,7 +159,7 @@ const Sidebar = ({userData, setUserData }) => {
             <li className='text-primary hover:bg-primary hover:text-secondary rounded-2xl'><Link to='/following'>Inspired by:  {following? following.length:'0'}</Link></li>
             <div className="divider"></div>
             <li className='text-primary hover:bg-primary hover:text-secondary rounded-2xl'><Link to='/settings'>Settings</Link></li>
-            <li className='text-primary hover:bg-primary hover:text-secondary rounded-2xl'><div onClick={logout} >Log-out</div></li>
+            <li className='text-primary hover:bg-primary hover:text-secondary rounded-2xl'><div onClick={()=>{logout()}} >Log-out</div></li>
             </ul>
         </div>
             
