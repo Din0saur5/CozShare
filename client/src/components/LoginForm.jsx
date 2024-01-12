@@ -2,6 +2,7 @@
 import { Formik, Form, Field } from 'formik';
 import * as Yup from 'yup';
 import { useNavigate } from 'react-router-dom';
+import { useState } from 'react';
 
 // Placeholder backend validation functions
 const checkemailExists = async (email) => {
@@ -34,9 +35,11 @@ const validationSchema = Yup.object({
 const LoginForm = () => {
   const server = import.meta.env.VITE_URL
   const navigate = useNavigate()
+  const [isLoading, setIsLoading] = useState(false)
+
 
     const handleSubmit = (values, { setSubmitting }) => {
-
+      setIsLoading(true)
       const url = `${server}/login`; 
   
       fetch(url, {
@@ -63,7 +66,7 @@ const LoginForm = () => {
       })
       .finally(() => {
         setSubmitting(false);
-        
+        setIsLoading(false)
       });
     };
   
@@ -106,9 +109,17 @@ const LoginForm = () => {
             />
           </div>
 
-          <button type="submit" className="mt-4 px-4 py-2 bg-blue-500 text-white rounded">
-            Login
+          {isLoading? (
+            <button className="btn rounded mt-4 px-4 py-2">
+            <span className="loading loading-infinity loading-lg"></span>
+            loading
           </button>
+          ):
+          (<button type="submit" className="mt-4 px-4 py-2 bg-blue-500 text-white rounded shadow-inner shadow-white">
+            Login
+          </button>)
+          }
+
         </Form>
       )}
     </Formik>
