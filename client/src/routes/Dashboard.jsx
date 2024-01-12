@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 import  { useCallback, useEffect, useState } from 'react'
-import {  useNavigate, useOutletContext } from 'react-router-dom'
+import { useOutletContext } from 'react-router-dom'
 import Sidebar from '../components/Sidebar'
 import AOS from 'aos';
 const Dashboard = () => {
