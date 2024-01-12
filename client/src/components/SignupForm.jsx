@@ -63,7 +63,7 @@ const SignupForm = () => {
 
     };
   
-    return fetch(url, {
+    fetch(url, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -72,7 +72,8 @@ const SignupForm = () => {
       credentials: 'include' // if you're handling sessions
     })
     .then(response =>{ if(response.ok){
-      navigate('/dashboard')
+      navigate('/profile')
+      navigate('/profile')
     }})
     
       
