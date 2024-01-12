@@ -9,19 +9,37 @@ import { Outlet } from "react-router-dom";
 import "../App.css"
 
 
+
 const AppLayout = () =>{
   const navigate = useNavigate();
   
   let data = useLoaderData(); 
-  const [userData, setUserData] = useState(data)
+  const [userData, setUserData] = useState({
+    id:'',
+    display_name:'',
+    catchphrase:'',
+    profile_pic:'',
+    following:[],
+    followers: []
+
+  })
+  
   useEffect(()=>{
-    
-    if (data === null){
-      navigate('/')
-    }
+    if (data){
 
     setUserData(data) 
-  },[data, navigate, userData, ])
+  }
+  return
+  },[data])
+
+  // useEffect(()=>{
+    
+  //   if (data === null){
+  //     navigate('/')
+  //   }
+
+  //   setUserData(data) 
+  // },[data, navigate, userData, ])
 
 
     
@@ -32,9 +50,7 @@ const AppLayout = () =>{
     <Outlet context={[userData, setUserData]} />
     </>
   ):(
-    <>
-    <Outlet />
-    </>
+    navigate('/')
   )
  
 }

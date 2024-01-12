@@ -4,8 +4,9 @@ import {  useNavigate, useOutletContext } from 'react-router-dom'
 import Sidebar from '../components/Sidebar'
 import AOS from 'aos';
 const Dashboard = () => {
+  //  const navigate = useNavigate()
    const [userData, setUserData] = useOutletContext()
-   if (userData){
+  //  if (userData !== null){
    const [userDataO, setUserDataO] = useState(userData)
    const [posts, setPosts] = useState([]);
    const [isFetching, setIsFetching] = useState(false);
@@ -65,8 +66,8 @@ const Dashboard = () => {
       <Sidebar userData={userDataO} setUserData={setUserDataO} setUserDataHO={setUserData} />
       </>
   )
-} else{
-  location.reload()
-}
+// } else{
+//   navigate('/')
+// }
 }
 export default Dashboard
