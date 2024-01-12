@@ -24,35 +24,33 @@ const AppLayout = () =>{
 
   })
   
-  useEffect(()=>{
-    if (data){
-
-    setUserData(data) 
-  }
-  
-  },[])
-
   // useEffect(()=>{
-    
-  //   if (data === null){
-  //     navigate('/')
-  //   }
+  //   if (data){
 
   //   setUserData(data) 
-  // },[data, navigate, userData, ])
+  // }
+  
+  // },[])
+
+  useEffect(()=>{
+    
+    if (data === null){
+      navigate('/')
+    }
+
+    setUserData(data) 
+  },[data, navigate, userData, ])
 
 
     
   
 
-  return data?(
+  return (
     <>
     <Outlet context={[userData, setUserData]} />
     </>
-  ):(
-    <Outlet/>
+  
   )
- 
 }
 export default AppLayout;
 
