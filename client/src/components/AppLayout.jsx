@@ -30,7 +30,7 @@ const AppLayout = () =>{
     setUserData(data) 
   }
   return
-  },[data])
+  },[])
 
   // useEffect(()=>{
     
