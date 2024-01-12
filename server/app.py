@@ -44,7 +44,7 @@ class Signup(Resource):
             db.session.add(new_user)
             db.session.commit()
             session['user_id'] = new_user.id
-            return new_user.to_dict(), 201
+            return make_response(new_user.to_dict(), 201)
         except IntegrityError:
             return {'error': '422 Unprocessable Entity'}, 422
 
