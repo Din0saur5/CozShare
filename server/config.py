@@ -12,9 +12,9 @@ from sqlalchemy import MetaData
 import secrets
 from flask_cors import CORS
 app = Flask(
-    __name__,
-    static_folder='../client/dist/static',
-    template_folder='../client/dist'
+    __name__, root_path='../client/dist/'
+    # static_folder='../client/dist/static',
+    # template_folder='../client/dist'
     
     )
 app.secret_key = os.getenv('SECRET_KEY')

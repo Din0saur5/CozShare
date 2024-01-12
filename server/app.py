@@ -568,4 +568,4 @@ api.add_resource(CheckSession, '/api/check_session', endpoint='check_session')
 api.add_resource(Login, '/api/login', endpoint='login')
 api.add_resource(Logout, '/api/logout', endpoint='logout')
 if __name__ == '__main__':
-  app.run(port=5555, debug=False)
+  app.run()
