@@ -208,7 +208,7 @@ function getRandomElement(arr) {
   return (
     <div>
       {/* You can open the modal using document.getElementById('ID').showModal() method */}
-        <button className="btn btn-accent" onClick={()=>setShowModal(true)}>Create New Event</button>
+        <button className="btn btn-accent shadow-inner shadow-white" onClick={()=>setShowModal(true)}>Create New Event</button>
         <dialog id="createEvent" className={`modal ${showModal? 'modal-open':''}`}>
         <div className="modal-box">
             <form method="dialog">

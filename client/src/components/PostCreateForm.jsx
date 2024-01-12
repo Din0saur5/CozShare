@@ -271,7 +271,7 @@ const clearForm = () => {
   return (
     <div>
       {/* You can open the modal using document.getElementById('ID').showModal() method */}
-        <button className="btn btn-accent" onClick={()=>setShowModal(true)}>Create New Post</button>
+        <button className="btn btn-accent shadow-inner shadow-white" onClick={()=>setShowModal(true)}>Create New Post</button>
         <dialog id="createPost" className={`modal ${showModal? 'modal-open':''}`}>
         <div className="modal-box">
             <form method="dialog">
