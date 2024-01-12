@@ -27,7 +27,7 @@ async function fetchData() {
     
     return data
   } else{
-  return redirect('/')
+  return null
 }}
     
   
