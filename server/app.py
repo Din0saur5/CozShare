@@ -58,7 +58,7 @@ class Login(Resource):
       if user.authenticate(password):
         session['user_id'] = user.id
         if session['user_id']:
-          return user.to_dict(), 200
+          return make_response(user.to_dict(), 200)
         return {'error': 'session could not be established'}, 400
       return {'error': "Unauthorized"}, 401
     return {'error': "User Not Found"}, 404
@@ -66,8 +66,8 @@ class CheckSession(Resource):
   def get(self):
     user = User.query.filter(User.id == session.get('user_id')).first()
     if user:
-        return user.to_dict(), 200
-    return {'error': 'Unauthorized'}, 401
+        return make_response(user.to_dict(), 200)
+    return make_response({'error': 'Unauthorized'}, 401)
 
 class CheckDisplayName(Resource):
     def get(self, display_name):
