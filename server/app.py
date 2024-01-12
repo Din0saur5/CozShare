@@ -18,8 +18,8 @@ def index(id=0):
 
 @app.before_request
 def check_if_logged_in():
-    if not session.get('user_id') and request.endpoint in {'/users',}:
-        return {'error': 'Unauthorized blah'}, 401
+    if not session.get('user_id') and request.endpoint in {'/signup','/login','/check_session','/check_user'}:
+        return {'error': 'Unauthorized'}, 401
 
 class AllUsers(Resource):
   def get(self):
