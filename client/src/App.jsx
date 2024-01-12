@@ -3,7 +3,7 @@
 import { createRoot } from "react-dom/client";
 import {
         createBrowserRouter,
-        redirect,
+        
         RouterProvider,
         
       } from "react-router-dom";
@@ -49,47 +49,47 @@ async function fetchData() {
             {
               path: "/dashboard",
               element: <Dashboard/>,
-             // loader: fetchData,
+              loader: fetchData,
             },
             {
               path: "/profile",
               element: <CurrentUserProfile/>, 
-             // loader: fetchData,
+             loader: fetchData,
             },
             {
               path: "/settings",
               element: <AccountSettings/>, 
-             // loader: fetchData,
+             loader: fetchData,
             },
             {
               path: "/event/:id",
               element: <Event/>, 
-             // loader: fetchData,
+             loader: fetchData,
             },
             {
               path: "/profile/:id",
               element: <UserProfile/>, 
-             // loader: fetchData,
+             loader: fetchData,
             },
             {
               path: "/followers",
               element: <List type={'followers'}/>, 
-             // loader: fetchData,
+             loader: fetchData,
             },
             {
               path: "/following",
               element: <List type={'following'}/>, 
-             // loader: fetchData,
+             loader: fetchData,
             },
             {
               path: "/search/:query",
               element: <List type={'query'}/>, 
-             // loader: fetchData,
+             loader: fetchData,
             },
             {
               path: "/events",
               element: <List type={'events'}/>, 
-             // loader: fetchData,
+             loader: fetchData,
             },
             
           ]

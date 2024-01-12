@@ -14,27 +14,13 @@ const AppLayout = () =>{
   const navigate = useNavigate();
   
   let data = useLoaderData(); 
-  const [userData, setUserData] = useState({
-    id:'',
-    display_name:'',
-    catchphrase:'',
-    profile_pic:'',
-    following:[],
-    followers: []
-
-  })
+  const [userData, setUserData] = useState(null)
   
-  // useEffect(()=>{
-  //   if (data){
 
-  //   setUserData(data) 
-  // }
-  
-  // },[])
 
   useEffect(()=>{
     
-    if (data === null){
+    if (!data){
       navigate('/')
     }
 
