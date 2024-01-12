@@ -2,6 +2,7 @@
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 import { useNavigate } from 'react-router-dom';
+import { useState } from 'react';
 
 // Mock function to check if display name exists
 // Replace this with your actual backend call
@@ -28,6 +29,7 @@ const validationSchema = Yup.object({
 const SignupForm = () => {
   const server = import.meta.env.VITE_URL
   const navigate = useNavigate();
+  const [isLoading, setIsLoading] = useState(false) 
   const checkDisplayNameExists = (displayName) => {
     const url = `${server}/check_user/${displayName}`; // Replace with your actual server URL
 
@@ -80,6 +82,7 @@ const SignupForm = () => {
     
     .catch((error) => {
       console.error('Error:', error);
+      location.reload()
     });
   }
 
@@ -96,7 +99,7 @@ const SignupForm = () => {
       }}
       validationSchema={validationSchema}
       onSubmit={async (values, { setSubmitting,  setFieldError  }) => {
-
+        setIsLoading(true)
         try {
           const displayNameExists = await checkDisplayNameExists(values.displayName);
           if (displayNameExists) {
@@ -111,7 +114,7 @@ const SignupForm = () => {
         }
         
         setSubmitting(false); // Stop the submission process (hide loading indicators, etc.)
-        
+        setIsLoading(false)
       }}
     >
       {({ errors, touched }) => (
@@ -176,9 +179,16 @@ const SignupForm = () => {
             <ErrorMessage name="confirmPassword" component="div" className="text-red-500" />
           </div>
 
-          <button type="submit" className="mt-4 px-4 py-2 bg-blue-500 text-white rounded">
+         { isLoading? (
+          <button className="btn rounded mt-4 px-4 py-2">
+            <span className="loading loading-infinity loading-lg"></span>
+            loading
+          </button>
+         ):
+         ( <button type="submit" className="mt-4 px-4 py-2 bg-blue-500 text-white rounded">
             Sign Up
           </button>
+          )}
         </Form>
       )}
     </Formik>
