@@ -89,7 +89,7 @@ const chooseMedia = () => {
       if (postType === 1){
               return  (<div>
                 
-                <iframe  className="w-full aspect-video" src={mediaSrc[0]}  allowfullscreen></iframe>
+                <iframe  className="w-full aspect-video" src={mediaSrc[0]}  allowFullScreen></iframe>
                
                     <label>YouTube URL:
                         <input className='input input-primary mx-4 mt-4 ' type="text" name="youtubeUrl" value={currentInput} onChange={handleMediaSrcInput}/>
@@ -120,7 +120,7 @@ const chooseMedia = () => {
 
                     
                     <input className="file-input file-input-bordered file-input-sm w-full max-w-xs" onChange={handleFileChange} type="file" name="image" accept="image/*" id='filePicker' />
-                    <button onClick={(e)=>{handleUploaderOpen(e)}} className='btn btn-accent btn-sm mt-2 '>Edit & Add</button>
+                    <button onClick={(e)=>{handleUploaderOpen(e)}} className={`btn btn-accent btn-sm mt-2 ${currentInput === ""? 'btn-disabled':'' }` }>Edit & Add</button>
                     <br/>
                     <small>Add images one at a time but up to 10 total</small>
                     {mediaSrc.length > 0 && ( 
@@ -159,18 +159,24 @@ const chooseMedia = () => {
       }
       
 
+     
+
     const mediaFormatterAndPost = async (e) => {
         e.preventDefault()
         setLoading(true)
-        let data
+       
         console.log('clicked')
-       if (postType === 1){
-
-        try{
-           data =  createPost(userData.id,1,mediaSrc,caption, event)
-        } catch (error){
-            console.error('Error in making post:', error);
-        }} else if (postType === 2){
+       if (postType === 1){     
+        try {
+            const data = await createPost(userData.id, 1, mediaSrc, caption, event);
+            setPostList([data, ...list])
+            // Handle the data or further actions here
+        } catch (error) {
+            console.error('Error creating post:', error);
+            // Handle the error appropriately
+        }
+        
+       } else if (postType === 2){
                 const finalURLArray = await Promise.all(mediaSrc.map(async (img) => {
                     try {
                         const uploadedImage = await uploadFile(img);
@@ -184,14 +190,14 @@ const chooseMedia = () => {
             
                 console.log(finalURLArray);
                 
-                data = createPost(userData.id, 2, finalURLArray, caption, event);
-                
+               const data = await createPost(userData.id, 2, finalURLArray, caption, event);
+                setPostList([data, ...list])
         }  
         setLoading(false)
         clearForm() 
         setShowModal(false)
         setToastVisible(true)
-        setPostList([...list , data])
+       
     };
   
     const handleFileChange = (e) => {
@@ -238,9 +244,9 @@ const chooseMedia = () => {
         </>
       )} else{
         return(
-        <div className="carousel w-full">
+        <div className="w-full">
             <figure>
-            <img src={mediaSrc[0].url} alt={mediaSrc[0].name} className="w-full" />
+            <img src={mediaSrc[0].url} alt={mediaSrc[0].name} className="w-full  aspect-3/2 object-contain" />
             </figure>
 
         </div>
@@ -277,7 +283,7 @@ const clearForm = () => {
             <li className="cursor-pointer step step-primary" onClick={()=>{setStep(1)}}>Post Type</li>
             <li className={`cursor-pointer step ${step > 1? 'step-primary':''}`} onClick={()=>{setStep(2)}} >Choose Media</li>
             <li className={`cursor-pointer step ${step > 2? 'step-primary':''}`} onClick={()=>{setStep(3)}}>Caption</li>
-            <li className={`cursor-pointer step ${step > 3? 'step-primary':''}`} onClick={()=>{setStep(4)}}>Finalize and Post</li>
+            <li className={`cursor-pointer step ${step > 3? 'step-primary':''}`} onClick={()=>{if(mediaSrc.length>0){setStep(4)}}}>Finalize and Post</li>
             </ul>
 
             <form onSubmit={(e)=>{mediaFormatterAndPost(e)}} className='flex flex-col align-center items-center'>
@@ -330,7 +336,7 @@ const clearForm = () => {
                     step === 4?
                         (
                         <>
-                            <div className="card card-compact w-96 bg-base-100 shadow-xl">
+                            <div className="card card-compact sm:w-96 bg-base-100 shadow-xl">
                                 <div className='flex flex-row bg-primary w-full py-2 rounded-t-xl'>
                                 <div className="avatar hover:bg-transparent ml-4">
                                 <div className="w-8 mask mask-hexagon hover:bg-transparent">
@@ -342,7 +348,7 @@ const clearForm = () => {
                                 </div>
                                 </div>
                                 {postType === 1? (
-                                <figure> <iframe  className="w-full aspect-video" src={mediaSrc[0]}  allowfullscreen></iframe>
+                                <figure> <iframe  className="w-full aspect-video" src={mediaSrc[0]}  allowFullScreen></iframe>
                                 </figure>
                                 ):(
                                     imagePostPreview()

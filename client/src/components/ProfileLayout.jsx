@@ -25,7 +25,7 @@ const ProfileLayout = ({activeTab, userData, setUserData, viewedProfile}) => {
         case 'Posts':
             return(
                 <> 
-                    <PostsTable userData={userData} setUserData={setUserData} viewedProfile={viewedProfile}/>
+                    <PostsTable userData={userData} setUserData={setUserData} viewedProfile={viewedProfile} type={'user'}/>
                 </>
             )
                 

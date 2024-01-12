@@ -143,7 +143,7 @@ const UserProfile = () => {
         {activeTab==='Posts'?
           (
             <>
-           <div style={{textShadow: "0 0 15px #a991f7 , 0 0 15px #fff "}} className=" divider divider-secondary  ">Posts</div>
+          
            <button onClick={()=>{handleFollow(id)}} className="btn btn-secondary btn-sm" >{followStatus? 'Unfollow':'Follow' }</button>
            </>
            )

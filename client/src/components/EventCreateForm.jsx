@@ -164,7 +164,8 @@ const submitCreateEvent = (e) => {
      ]
     const greeting = getRandomElement(greetings)
     if(makePost){
-        createPost(membersData.user_id, 1, [profile_pic],greeting,'',membersData.event_id)
+        createPost(membersData.user_id, 2, [profile_pic],greeting,membersData.event_id)
+        
     }
     return
     

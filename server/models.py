@@ -62,7 +62,7 @@ class Post(db.Model, SerializerMixin):
    media = db.Column(db.ARRAY(db.TEXT))
    caption = db.Column(db.TEXT)
    likes = db.Column(db.ARRAY(db.TEXT))
-   created = db.Column(db.DateTime, index=True, server_default=db.func.now())
+   created = db.Column(db.DateTime, index=True)
    event_id = db.Column(UUID(as_uuid=True), db.ForeignKey('events.id', ondelete='CASCADE'), nullable=True)
    
    user = db.relationship('User', back_populates='posts')

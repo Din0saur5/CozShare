@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import React, { useState } from 'react'
+import { useState } from 'react'
 import { useNavigate } from 'react-router-dom';
 
 function SearchBar({follows}) {
@@ -53,7 +53,7 @@ function SearchBar({follows}) {
                 </svg>
             </div>
             <input type="search" value={searchVal} onChange={handleChange} id="search" className="block rounded w-full p-4 ps-10 text-sm " placeholder="Search" required/>
-            <button type="submit" className="text-white absolute end-2.5 bottom-2.5 bg-primary hover:bg-secondary focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 ">Search</button>
+            <button type="submit" className="text-white absolute end-2.5 bottom-2.5 bg-primary hover:bg-secondary focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 shadow-inner shadow-white">Search</button>
             {suggestions.length > 0 && (
         <ul className="absolute z-50 border border-gray-400 bg-white w-3/4 rounded mt-0 p-0">
           {suggestions.map((suggestion, index) => (

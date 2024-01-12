@@ -2,6 +2,9 @@
 
 import { useNavigate } from 'react-router-dom';
 import MembersTable from './MembersTable'
+import PostsTable from './PostTable';
+
+import ChatRoom from './ChatRoom';
 
 
 const EventLayout = ({activeTab, userData, setUserData, memberList, viewedProfile, setMemberList}) => {
@@ -154,7 +157,7 @@ const EventLayout = ({activeTab, userData, setUserData, memberList, viewedProfil
                (
 
                 <>
-                 hi
+                 <ChatRoom event={viewedProfile} currentUser={userData}/>
                 </>
             ):(
                 <>
@@ -169,7 +172,7 @@ const EventLayout = ({activeTab, userData, setUserData, memberList, viewedProfil
                 (
  
                  <>
-                  hi
+                  <PostsTable userData={userData} setUserData={setUserData} viewedProfile={viewedProfile} type={'event'}/>
                  </>
              ):(
                  <>

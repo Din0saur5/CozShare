@@ -201,7 +201,7 @@ class GetFeed(Resource):
 
     following_list = user.following
   
-    limit = request.args.get('limit', 20, type=int)
+    limit = request.args.get('limit', 10, type=int)
     offset = request.args.get('offset', 0, type=int)
 
     posts = Post.query.filter(Post.user_id.in_(following_list)) \
@@ -329,6 +329,7 @@ class AllPost(Resource):
             media=data['media'],
             caption=data['caption'],
             likes=[],
+            created=data['created'],
             event_id=data.get('event_id')
         )
         db.session.add(new_post)
@@ -479,7 +480,7 @@ class DeleteAccount(Resource):
 
 class GetPostsByUserId(Resource):
   def get(self, id):
-    posts = Post.query.filter(Post.user_id == id).all()
+    posts = Post.query.filter(Post.user_id == id).order_by(Post.created.desc()).all()
     if not posts:
       return {'error': 'Posts not found'}, 404
     else:
@@ -488,14 +489,60 @@ class GetPostsByUserId(Resource):
 
 class GetPostsByEventId(Resource):
   def get(self, id):
-    posts = Post.query.filter(Post.event_id == id).all()
+    posts = Post.query.filter(Post.event_id == id).order_by(Post.created.desc()).all()
     if not posts:
       return {'error': 'Posts not found'}, 404
     else:
       rb = [post.to_dict() for post in posts]
       return make_response(rb, 200)
 
+class DeletePost(Resource):
+  def delete(self, id):
+    post = Post.query.filter(Post.id == id).first()
+    if post:
+      try:
+        db.session.delete(post)
+        db.session.commit()
+        return make_response({"message": "Account deleted successfully"}, 200)
+      except Exception as e:
+          db.session.rollback()
+          print(e)
+          return make_response({"error": f"Failed to delete post: {e}"}, 500)
 
+class CommentByPostId(Resource):
+  def get(self, id):
+    
+    comments = Comment.query.filter(Comment.post_id == id).order_by(Comment.created.desc()).all()
+    if not comments:
+      return {'error': 'Posts not found'}, 404
+    else:
+      rb = [comment.to_dict() for comment in comments]
+      return make_response(rb,200)
+  
+  def post(self,id):
+        data = request.get_json()
+        print("Received comment data:", data)
+
+        try:
+            new_comment = Comment(
+                user_id=session.get('user_id'),
+                post_id=id,
+                comment=data['comment'],
+                upvotes=data.get('upvotes', 0)  # Default upvotes to 0 if not provided
+            )
+            db.session.add(new_comment)
+            db.session.commit()
+
+            response_data = new_comment.to_dict()
+            print("New comment added:", response_data)
+            return make_response(response_data, 201)  # Converts the dict to JSON
+        except Exception as e:
+            print("Error adding comment:", e)
+            db.session.rollback()
+            return make_response({'error': 'Error adding comment'}, 500)
+
+api.add_resource(CommentByPostId, '/comments/<uuid:id>')
+api.add_resource(DeletePost, '/post_delete/<uuid:id>')
 api.add_resource(GetPostsByEventId, '/posts_by_event/<uuid:id>')
 api.add_resource(GetPostsByUserId, '/posts_by_user/<uuid:id>')
 api.add_resource(DeleteAccount, '/delete_account')    

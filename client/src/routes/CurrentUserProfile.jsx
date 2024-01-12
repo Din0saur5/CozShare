@@ -86,7 +86,7 @@ const CurrentUserProfile = () => {
         </form>
     </div>
      </div>
-     <div className="flex flex-col invisible sm:visible">
+     <div className="flex flex-col visible">
         
             
         

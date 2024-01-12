@@ -8,12 +8,11 @@ const Dashboard = () => {
    if (userData){
    const [userDataO, setUserDataO] = useState(userData)
    const [posts, setPosts] = useState([]);
-   const [loadMoreCount, setLoadMoreCount] = useState(9);
    const [isFetching, setIsFetching] = useState(false);
    const [hasMorePosts, setHasMorePosts] = useState(true);
   
 
-    const fetchRecipes = async (limit, offset) => {
+    const fetchPosts = async (limit, offset) => {
       const server = import.meta.env.VITE_BACK_END_SERVE;
   
       setIsFetching(true);
@@ -34,7 +33,7 @@ const Dashboard = () => {
     };
   console.log(posts)
     useEffect(() => {
-      fetchRecipes(loadMoreCount, 0);
+      fetchPosts(10, 0);
     }, []);
   
   
@@ -48,7 +47,7 @@ const Dashboard = () => {
   
     const loadMoreOnScroll = useCallback(() => {
       if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 100 && hasMorePosts && !isFetching) {
-        fetchRecipes(6, posts.length);
+        fetchPosts(6, posts.length);
       }
     }, [posts.length, hasMorePosts, isFetching]);
   
