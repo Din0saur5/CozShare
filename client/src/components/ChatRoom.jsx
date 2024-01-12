@@ -96,8 +96,9 @@ useEffect(() => {
     };
 
     fetchMessages();
+}, [event.id, channel])
 
-    // Subscribe to changes
+useEffect(() => {   
     channel 
       .on('postgres_changes', { event: '*', schema: 'public', table: 'messages' }, payload => {
         if (payload.new && payload.new.event_id === event.id) {
@@ -108,11 +109,9 @@ useEffect(() => {
       .subscribe();
 
     // Clean up
-    return () => {
-      supabase.removeChannel(channel);
+    return  supabase.removeAllChannels();
       
-  }}, [event.id, channel])
-
+}, [])
   
 
 

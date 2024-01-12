@@ -137,9 +137,9 @@ const EventLayout = ({activeTab, userData, setUserData, memberList, viewedProfil
                 <>
                  
                      {userData.id === viewedProfile.admin_id? (
-                         <button onClick={()=>{handleDelete(viewedProfile.id)}} className='btn bg-red-500'>Delete Event</button>
+                         <button onClick={()=>{handleDelete(viewedProfile.id)}} className='btn bg-red-500 shadow-inner shadow-white'>Delete Event</button>
                          ):(
-                          <button onClick={()=>{deleteMember(userData.id, viewedProfile.id, setMemberList)}} className='btn btn-accent'>Leave Event</button>
+                          <button onClick={()=>{deleteMember(userData.id, viewedProfile.id, setMemberList)}} className='btn btn-accent shadow-inner shadow-white'>Leave Event</button>
                          )
                         }
                          
@@ -148,7 +148,7 @@ const EventLayout = ({activeTab, userData, setUserData, memberList, viewedProfil
             ):(
                 <>
                 <div style={{textShadow: "0 0 15px #a991f7 , 0 0 15px #fff "}} className=" divider divider-secondary  ">Join Event to view {activeTab}</div>
-                <button onClick={()=>{addNewMember(userData.id, viewedProfile.id, setMemberList)}} className='btn btn-accent'>Join Event</button>
+                <button onClick={()=>{addNewMember(userData.id, viewedProfile.id, setMemberList)}} className='btn btn-accent shadow-inner shadow-white'>Join Event</button>
                 </>
             )
             )
@@ -162,7 +162,7 @@ const EventLayout = ({activeTab, userData, setUserData, memberList, viewedProfil
             ):(
                 <>
                 <div style={{textShadow: "0 0 15px #a991f7 , 0 0 15px #fff "}} className=" divider divider-secondary  ">Join Event to view {activeTab}</div>
-                <button onClick={()=>{addNewMember(userData.id, viewedProfile.id, setMemberList)}}  className='btn btn-accent'>Join Event</button>
+                <button onClick={()=>{addNewMember(userData.id, viewedProfile.id, setMemberList)}}  className='btn btn-accent shadow-inner shadow-white'>Join Event</button>
                 </>
             )
             )
@@ -177,7 +177,7 @@ const EventLayout = ({activeTab, userData, setUserData, memberList, viewedProfil
              ):(
                  <>
                  <div style={{textShadow: "0 0 15px #a991f7 , 0 0 15px #fff "}} className=" divider divider-secondary  ">Join Event to view {activeTab}</div>
-                 <button onClick={()=>{addNewMember(userData.id, viewedProfile.id, setMemberList)}}  className='btn btn-accent'>Join Event</button>
+                 <button onClick={()=>{addNewMember(userData.id, viewedProfile.id, setMemberList)}}  className='btn btn-accent shadow-inner shadow-white'>Join Event</button>
                  </>
              )
              )

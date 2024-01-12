@@ -19,7 +19,6 @@
     requests = "*"
     psycopg2-binary = "*"
     python-dotenv = "*"
-    flask-socketio = "*"
     [requires]
     python_full_version = "3.8.13"
     python-dotenv = "*"
