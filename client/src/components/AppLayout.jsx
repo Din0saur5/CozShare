@@ -29,7 +29,7 @@ const AppLayout = () =>{
 
     setUserData(data) 
   }
-  return
+  
   },[])
 
   // useEffect(()=>{
@@ -50,7 +50,7 @@ const AppLayout = () =>{
     <Outlet context={[userData, setUserData]} />
     </>
   ):(
-    navigate('/')
+    <Outlet/>
   )
  
 }
