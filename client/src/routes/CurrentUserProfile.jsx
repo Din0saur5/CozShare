@@ -89,11 +89,11 @@ const CurrentUserProfile = () => {
         
             
         
-      <div className="relative right-0 flex flex-row-reverse space-x-2 rounded-t-xl w-full ">
+      <div className="relative right-0 flex flex-row-reverse space-x-1 sm:space-x-2 rounded-t-xl w-full ">
         {[ 'Inspiring', 'Inspired by', 'Events', 'Posts'].map((tab) => (
             <label
             key={tab}
-            className={`tab border border-third flex-initial bg-base-200 ml-2 mr-4  rounded-t-xl text-center px-4 cursor-pointer hover:underline ${activeTab === tab ? 'bg-primary text-base-100' : ''}`} >
+            className={`tab border border-third flex-initial bg-base-200 ml-2 mr-4 max-sm:text-xs rounded-t-xl text-center px-4 cursor-pointer hover:underline ${activeTab === tab ? 'bg-primary text-base-100' : ''}`} >
             <input
               type="radio"
               name="tabs"

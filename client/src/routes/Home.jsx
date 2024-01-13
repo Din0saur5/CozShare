@@ -65,7 +65,7 @@ Connect with fellow wizards of the craft, showcase your masterpieces, and embark
 
 Welcome to the realm of imagination and endless possibilities! 🚀</p>
                 <div className='flex justify-evenly'>
-                <button onClick={()=>openSignLog()} className="btn btn-primary">Get Started</button>
+                <button onClick={()=>openSignLog()} className="btn btn-primary ">Get Started</button>
                 <HashLink smooth to='#about'>
                   <div className=" btn btn-secondary">Learn More</div>
                 </HashLink>

@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 /* eslint-disable no-unused-vars */
 
 import { Formik, Form, Field } from 'formik';
@@ -38,7 +39,7 @@ const LoginForm = ({setUserData}) => {
   const navigate = useNavigate()
   const [isLoading, setIsLoading] = useState(false)
 
-    const handleSubmit = (values, { setSubmitting }) => {
+    const handleSubmit = async (values, { setSubmitting, setFieldError }) => {
       setIsLoading(true)
       const url = `${server}/login`; 
   
@@ -67,7 +68,7 @@ const LoginForm = ({setUserData}) => {
       })
       .catch((error) => {
         console.error('Login Error:', error);
-        
+        alert("Invalid Login Credentials")
         
       })
       .finally(() => {

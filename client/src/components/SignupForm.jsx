@@ -104,7 +104,7 @@ const SignupForm = () => {
           const displayNameExists = await checkDisplayNameExists(values.displayName);
           if (displayNameExists) {
             setFieldError('displayName', 'Display name already taken');
-            return;
+            throw new Error("Display Name Taken")
           }else{
             signup(values.email, values.displayName, values.password)
           }
@@ -131,7 +131,7 @@ const SignupForm = () => {
               type="email"
               className={`mt-1 block w-full ${errors.email && touched.email ? 'outline-red-500' : 'outline-green-500'}`}
             />
-              <ErrorMessage name="email" component="div" className="text-red-500" />
+              {/* <ErrorMessage name="email" component="div" className="text-red-500" /> */}
           </div>
 
           <div>
@@ -146,7 +146,7 @@ const SignupForm = () => {
               type="text"
               className={`mt-1 block w-full ${errors.displayName && touched.displayName ? 'outline-red-500' : 'outline-green-500'}`}
             />
-             <ErrorMessage name="displayName" component="div" className="text-red-500" />
+             {/* <ErrorMessage name="displayName" component="div" className="text-red-500" /> */}
           </div>
 
           <div>
@@ -161,7 +161,7 @@ const SignupForm = () => {
               type="password"
               className={`mt-1 block w-full ${errors.password && touched.password ? 'outline-red-500' : 'outline-green-500'}`}
             />
-            <ErrorMessage name="password" component="div" className="text-red-500" />
+            {/* <ErrorMessage name="password" component="div" className="text-red-500" /> */}
           </div>
 
           <div>
@@ -176,7 +176,7 @@ const SignupForm = () => {
               type="password"
               className={`mt-1 block w-full ${errors.confirmPassword && touched.confirmPassword ? 'outline-red-500' : 'outline-green-500'}`}
             /> 
-            <ErrorMessage name="confirmPassword" component="div" className="text-red-500" />
+            {/* <ErrorMessage name="confirmPassword" component="div" className="text-red-500" /> */}
           </div>
 
          { isLoading? (
@@ -185,7 +185,7 @@ const SignupForm = () => {
             loading
           </button>
          ):
-         ( <button type="submit" className="mt-4 px-4 py-2 bg-blue-500 text-white rounded">
+         ( <button type="submit" className="mt-4 px-4 py-2 bg-blue-500 text-white rounded shadow-inner shadow-white">
             Sign Up
           </button>
           )}
