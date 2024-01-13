@@ -11,9 +11,9 @@ import random
 def generate_random_hex_color():
     # Generates a random hex color
             return ''.join(random.choices('0123456789ABCDEF', k=6))
-@app.route('/')
-@app.route('/<int:id>')
-def index(id=0):
+@app.route('/', defaults={'path': ''})
+@app.route('/<path:path>')
+def catch_all(path):
     return render_template("index.html")
 
 
