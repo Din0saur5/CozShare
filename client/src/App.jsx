@@ -4,6 +4,8 @@ import { createRoot } from "react-dom/client";
 import {
         createBrowserRouter,
         
+
+        
         RouterProvider,
         
       } from "react-router-dom";
@@ -16,20 +18,31 @@ import AccountSettings from "./routes/AccountSettings";
 import Event from "./routes/Event";
 import UserProfile from "./routes/UserProfile";
 import List from "./routes/List";
-      
+
+const server = import.meta.env.VITE_URL;
 
 
-async function fetchData() {
-  const server = import.meta.env.VITE_URL
-  const response = await fetch(`${server}/check_session`);
-  if (response.ok) {
-    const data = await response.json();
-    
-    return data
-  } else{
-  return null
-}}
-    
+// function fetchData() {
+
+
+// return fetch(`${server}/check_session`, { credentials: 'include' })
+//   .then(response => {
+//     if (response.ok) {
+//       return response.json(); // Parse the JSON if the response is successful
+//     } else {
+//       return null // Throw an error if not successful
+//     }
+//   })
+  
+ 
+//   .catch(error => {
+//     console.log("Error:", error.message);
+//     return null; // Return null in case of error
+//   });
+
+
+
+// }
   
 
   
@@ -38,58 +51,58 @@ async function fetchData() {
       const router = createBrowserRouter([
         {
           path: "/",
-          element: <AppLayout/>, 
-          loader: fetchData,
-        errorElement: <ErrorPage/>,
+          loader: async () =>{ return fetch(`${server}/check_session`, { credentials: 'include' }) },
+          element: <AppLayout />,
+          errorElement: <ErrorPage />,
           children:[
             {
               path: "/",
-              element: <Home/> //set up context and on sign up or login set the context and session storage
+              element: <Home/> // doesnt require authentication
             },
             {
               path: "/dashboard",
               element: <Dashboard/>,
-              loader: fetchData,
+              // loader: fetchData,
             },
             {
               path: "/profile",
               element: <CurrentUserProfile/>, 
-             loader: fetchData,
+            //  loader: fetchData,
             },
             {
               path: "/settings",
               element: <AccountSettings/>, 
-             loader: fetchData,
+            //  loader: fetchData,
             },
             {
               path: "/event/:id",
               element: <Event/>, 
-             loader: fetchData,
+            //  loader: fetchData,
             },
             {
               path: "/profile/:id",
               element: <UserProfile/>, 
-             loader: fetchData,
+            //  loader: fetchData,
             },
             {
               path: "/followers",
               element: <List type={'followers'}/>, 
-             loader: fetchData,
+            //  loader: fetchData,
             },
             {
               path: "/following",
               element: <List type={'following'}/>, 
-             loader: fetchData,
+            //  loader: fetchData,
             },
             {
               path: "/search/:query",
               element: <List type={'query'}/>, 
-             loader: fetchData,
+            //  loader: fetchData,
             },
             {
               path: "/events",
               element: <List type={'events'}/>, 
-             loader: fetchData,
+            //  loader: fetchData,
             },
             
           ]

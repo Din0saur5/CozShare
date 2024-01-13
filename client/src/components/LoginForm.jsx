@@ -33,7 +33,7 @@ const validationSchema = Yup.object({
     ),
 });
 
-const LoginForm = () => {
+const LoginForm = ({setUserData}) => {
   const server = import.meta.env.VITE_URL
   const navigate = useNavigate()
   const [isLoading, setIsLoading] = useState(false)
@@ -54,20 +54,26 @@ const LoginForm = () => {
         credentials: 'include' 
       })
       .then(response => { if(response.ok){
-       navigate('/dashboard')
-       navigate('/dashboard') 
+        return response.json()
+         
         } else{
           throw new Error("HTTP error " + response.status)
         }
       })
+      .then((data)=>{
+        console.log('line 64 login form', data)
+        setUserData(data)
+        navigate('/dashboard')
+      })
       .catch((error) => {
-        location.reload()
         console.error('Login Error:', error);
+        
         
       })
       .finally(() => {
         setSubmitting(false);
         setIsLoading(false)
+     
       });
     };
   

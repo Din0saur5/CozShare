@@ -1,14 +1,15 @@
 import { useEffect, useState } from 'react'
 import Sidebar from '../components/Sidebar'
-import { useOutletContext, useParams } from 'react-router-dom'
+import { useParams } from 'react-router-dom'
 import EventLayout from '../components/EventLayout'
+import { useUserContext } from '../components/UserContext'
 
 const Event = () => {
-    const [userData, setUserData] = useOutletContext() 
+   const {userData, setUserData} = useUserContext() 
     let { id } = useParams(); 
     const server = import.meta.env.VITE_URL
     const [viewEvent, setEvent] = useState({})
-    const [userDataO, setUserDataO] = useState(userData) 
+  
     const [memberList, setMemberList] = useState([{}])
     const [activeTab, setActiveTab] = useState('Posts');
 
@@ -110,7 +111,7 @@ const Event = () => {
     
       </div>
       <div className="relative rounded-tl-lg bg-base-300 p-4 mx-4 h-full min-h-screen border border-third rounded-b-lg">
-          <EventLayout activeTab={activeTab} userData={userDataO} setUserData={setUserDataO} memberList={memberList} viewedProfile={viewEvent} setMemberList={setMemberList}/> 
+          <EventLayout activeTab={activeTab} userData={userData} setUserData={setUserData} memberList={memberList} viewedProfile={viewEvent} setMemberList={setMemberList}/> 
         </div>
   
      

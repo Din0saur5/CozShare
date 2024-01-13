@@ -8,24 +8,23 @@ import { VscFeedback } from "react-icons/vsc";
 import { themeChange } from 'theme-change';
 
 const Sidebar = ({userData, setUserData }) => {
+    console.log("side bar line 11: ", userData)
     const navigate = useNavigate()
     const [drawerOpen, setDrawerOpen] = useState(false)
     const server = import.meta.env.VITE_URL
 
 
-
-
-
     function logout() {
-        setUserData(null);
+        
         fetch(`${server}/logout`, {
             method: "DELETE",
             credentials: 'include' 
         })
         .then(response => {
             if (response.ok) {
+                setUserData(null)
                 navigate("/")
-                navigate("/")
+                
             } else {
                 // Handle logout failure (e.g., show error message)
                 console.error('Logout failed:', response.status);

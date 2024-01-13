@@ -8,6 +8,7 @@ import AOS from 'aos';
 import 'aos/dist/aos.css';
 
 import { themeChange } from 'theme-change';
+import { useUserContext } from '../components/UserContext';
 
 
 //darkmode light mode top right corner use icons
@@ -16,7 +17,8 @@ import { themeChange } from 'theme-change';
 
 
     const Home = () => {
-      
+      const { userData, setUserData } = useUserContext();
+      console.log("line 20 home", userData)
       const [signLog, setSignLog] = useState(true)
       const [showLogin, setShowLogin] = useState(true)
       const openSignLog = () => {
@@ -122,13 +124,13 @@ Welcome to the realm of imagination and endless possibilities! 🚀</p>
                 <div className="py-4 ">
                   {showLogin ? (
                     <>
-                     <SignupForm/>
+                     <SignupForm setUserData={setUserData}/>
                      <small >Already have an account? <span className='text-blue-400 cursor-pointer' onClick={()=>setShowLogin(false)}>Log-In</span></small>
                     </>
                   ):(
 
                     <>
-                    <LoginForm />
+                    <LoginForm setUserData={setUserData} />
                     <small >Don&apos;t have an account? <span className='text-blue-400 cursor-pointer' onClick={()=>setShowLogin(true)} to ='/signup'>Sign Up</span></small>
                     </>
                   )

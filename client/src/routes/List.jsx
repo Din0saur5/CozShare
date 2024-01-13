@@ -1,29 +1,29 @@
 /* eslint-disable react/prop-types */
 import { useState } from 'react'
 import Sidebar from '../components/Sidebar'
-import { useOutletContext, useParams } from 'react-router-dom'
+import {  useParams } from 'react-router-dom'
 import FollowingTable from '../components/FollowingTable'
 import FollowersTable from '../components/FollowersTable'
 import EventsTable from '../components/EventsTable'
 import QueryTable from '../components/QueryTable'
+import { useUserContext } from '../components/UserContext'
 
 const List = ({type}) => {
-    const [userData, setUserData] = useOutletContext() 
-    const [userDataO, setUserDataO] = useState(userData)
+    const {userData, setUserData} = useUserContext() 
     const [activeTab, setActiveTab] = useState('Users')
     const {query} = useParams()
 const listType = () => {
   
   switch(type){
     case'following':
-      return  <FollowingTable userData={userDataO} setUserData={setUserDataO} viewedProfile={userDataO.id} />
+      return  <FollowingTable userData={userData} setUserData={setUserData} viewedProfile={userData.id} />
 
     case'followers':
-      return <FollowersTable userData={userDataO} setUserData={setUserDataO} viewedProfile={userDataO.id} />
+      return <FollowersTable userData={userData} setUserData={setUserData} viewedProfile={userData.id} />
 
     case 'events':
       return (
-        <EventsTable userData={userData} setUserData={setUserData} viewedProfile={userDataO.id} /> 
+        <EventsTable userData={userData} setUserData={setUserData} viewedProfile={userData.id} /> 
         ) 
     case 'query' :
       return(
@@ -51,7 +51,7 @@ const listType = () => {
             </div>
             <div className="relative rounded-tl-lg bg-base-300 p-4 mx-4 h-full min-h-screen border border-third rounded-b-lg">
             {console.log(activeTab)}
-            <QueryTable query={query} userData={userDataO} setUserData={setUserDataO} tab={activeTab}/> 
+            <QueryTable query={query} userData={userData} setUserData={setUserData} tab={activeTab}/> 
               </div>
       </>
         
@@ -64,7 +64,7 @@ const listType = () => {
   return (
     <>
    <div className='flex flex-row bg-third sm:bg-primary'>
-    <Sidebar userData={userDataO} setUserData={setUserDataO}  /> 
+    <Sidebar userData={userData} setUserData={setUserData}  /> 
     <div className=' lg:ml-80 mt-16 min-h-screen h-full w-full lg:w-bg bg-third sm:bg-base-200'>
     <div className='ml-4 mr-4'>
     

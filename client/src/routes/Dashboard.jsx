@@ -1,20 +1,21 @@
 /* eslint-disable react-hooks/rules-of-hooks */
-import  { useCallback, useEffect, useState } from 'react'
-import {  useNavigate, useOutletContext } from 'react-router-dom'
+import  { useCallback,  useEffect, useState } from 'react'
+
 import Sidebar from '../components/Sidebar'
 import AOS from 'aos';
+import { useUserContext } from '../components/UserContext';
 const Dashboard = () => {
   //  const navigate = useNavigate()
-   const [userData, setUserData] = useOutletContext()
-  //  if (userData !== null){
-   const [userDataO, setUserDataO] = useState(userData)
-   const [posts, setPosts] = useState([]);
-   const [isFetching, setIsFetching] = useState(false);
-   const [hasMorePosts, setHasMorePosts] = useState(true);
+   const {userData, setUserData} = useUserContext()
+  console.log(userData)
+  const [posts, setPosts] = useState([]);
+  const [isFetching, setIsFetching] = useState(false);
+  const [hasMorePosts, setHasMorePosts] = useState(true);
+  
   
 
     const fetchPosts = async (limit, offset) => {
-      const server = import.meta.env.VITE_BACK_END_SERVE;
+      const server = import.meta.env.VITE_URL;
   
       setIsFetching(true);
       try {
@@ -62,9 +63,9 @@ const Dashboard = () => {
     <>
     <div className='fixed z-0 h-full w-full bg-primary'>
 
-    </div>
-      <Sidebar userData={userDataO} setUserData={setUserDataO} setUserDataHO={setUserData} />
-      </>
+    </div>{userData &&(
+      <Sidebar userData={userData} setUserData={setUserData}  />
+    )}</>
   )
 // } else{
 //   navigate('/')
