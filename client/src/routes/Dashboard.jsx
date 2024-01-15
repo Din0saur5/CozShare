@@ -1,9 +1,11 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable react-hooks/rules-of-hooks */
 import  { useCallback,  useEffect, useState } from 'react'
 
 import Sidebar from '../components/Sidebar'
 import AOS from 'aos';
 import { useUserContext } from '../components/UserContext';
+import PostRow from '../components/PostRow';
 const Dashboard = () => {
   //  const navigate = useNavigate()
    const {userData, setUserData} = useUserContext()
@@ -35,7 +37,7 @@ const Dashboard = () => {
     };
   console.log(posts)
     useEffect(() => {
-      fetchPosts(10, 0);
+      fetchPosts(4, 0);
     }, []);
   
   
@@ -61,14 +63,27 @@ const Dashboard = () => {
 
   return (
     <>
-    <div className='fixed z-0 h-full w-full bg-primary'>
+        
+      <div className='flex flex-row bg-base-200'>
+        {userData &&(
+          <Sidebar userData={userData} setUserData={setUserData}  />
+        )}
+      
+        <div  className='lg:ml-80 mt-16 min-h-screen h-full w-full lg:w-bg bg-base-200'>
+          <div className='ml-4 mr-4'>
+            <div  className='grid-fix grid md:grid-cols-2 lg:grid-cols-1  xl:grid-cols-2 2xl:grid-cols-3 overflow-x-hidden'>
+              {posts? (posts.map(post=>{
+                  return <PostRow  key={post.id} post={post} currentUser={userData.id} list={posts} setList={setPosts}/>
+              })
+                ):<small>no posts</small> 
+                }
 
-    </div>{userData &&(
-      <Sidebar userData={userData} setUserData={setUserData}  />
-    )}</>
+            </div>
+          </div>
+        </div>
+      </div>
+    </>
   )
-// } else{
-//   navigate('/')
-// }
+
 }
 export default Dashboard

@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { useEffect, useState } from 'react'
 import Sidebar from '../components/Sidebar'
 import { useParams } from 'react-router-dom'
@@ -26,7 +27,7 @@ const Event = () => {
           console.log(data)
           setEvent(data)
         })
-    },[]) 
+    },[id]) 
 
     useEffect(()=>{
       const config = {
