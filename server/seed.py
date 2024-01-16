@@ -110,4 +110,74 @@ if __name__ == '__main__':
         make_users()  
             
             
-   
+     events = [
+    {
+        "eventName": "Mystic Realms Cosplay Con",
+        "location": "Austin, Texas",
+        "timestamp": "October 5-7, 2024",
+        "description": "Dive into a world of fantasy and creativity at Mystic Realms Cosplay Con. Celebrate the art of cosplay with workshops, contests, and special guest appearances.",
+        "profile_pic": "https://mgofmfewguhdxnissjvz.supabase.co/storage/v1/object/public/profile-pics/MysticRealms.png?t=2024-01-16T02%3A26%3A01.452Z"
+    },
+    {
+        "eventName": "Royal Joust Renaissance Fair",
+        "location": "Orlando, Florida",
+        "timestamp": "March 12-14, 2024",
+        "description": "Step back in time and experience the thrill of medieval jousting, artisan markets, and traditional Renaissance entertainment.",
+        "profile_pic": "https://mgofmfewguhdxnissjvz.supabase.co/storage/v1/object/public/profile-pics/RoyalJoust.png?t=2024-01-16T02%3A25%3A51.184Z"
+    },
+    {
+        "eventName": "Legends & Lore Expo",
+        "location": "Denver, Colorado",
+        "timestamp": "August 20-22, 2024",
+        "description": "A haven for folklore enthusiasts, featuring panel discussions, costume contests, and immersive experiences based on legendary tales and myths.",
+        "profile_pic": "https://mgofmfewguhdxnissjvz.supabase.co/storage/v1/object/public/profile-pics/LegendLore.png?t=2024-01-16T02%3A25%3A33.540Z"
+    },
+    {
+        "eventName": "Enchanted Forest Faire",
+        "location": "Asheville, North Carolina",
+        "timestamp": "May 15-17, 2024",
+        "description": "Wander through an enchanted forest setting, with themed performances, historical reenactments, and a vibrant medieval marketplace.",
+        "profile_pic": "https://mgofmfewguhdxnissjvz.supabase.co/storage/v1/object/public/profile-pics/EnchantedForest.png?t=2024-01-16T02%3A25%3A25.962Z"
+    },
+    {
+        "eventName": "Dragon’s Keep Fantasy Fest",
+        "location": "Seattle, Washington",
+        "timestamp": "July 9-11, 2024",
+        "description": "Enter the realm of dragons and fantasy at this unique festival, showcasing intricate cosplay, fantasy art, and interactive gaming experiences.",
+        "profile_pic": "https://mgofmfewguhdxnissjvz.supabase.co/storage/v1/object/public/profile-pics/DragonsKeep.png?t=2024-01-16T02%3A25%3A17.499Z"
+    },
+    {
+        "eventName": "Knights & Knaves Medieval Carnival",
+        "location": "Columbus, Ohio",
+        "timestamp": "September 22-24, 2024",
+        "description": "Revel in the medieval era with armored knights, jesters, and traditional music. Enjoy hands-on activities, historical workshops, and hearty fare.",
+        "profile_pic": "https://mgofmfewguhdxnissjvz.supabase.co/storage/v1/object/public/profile-pics/KnightKnave.png?t=2024-01-16T02%3A25%3A08.280Z"
+    },
+    {
+        "eventName": "Celestial Convergence Cosplay Gala",
+        "location": "San Francisco, California",
+        "timestamp": "June 5-7, 2024",
+        "description": "A cosmic-themed cosplay event blending science fiction with fantasy. Features include costume showcases, sci-fi authors, and stargazing sessions.",
+        "profile_pic": "https://mgofmfewguhdxnissjvz.supabase.co/storage/v1/object/public/profile-pics/CelestialConvergance.png?t=2024-01-16T02%3A24%3A53.519Z"
+    },
+    {
+        "eventName": "Renaissance Revelry & Banquet",
+        "location": "Charleston, South Carolina",
+        "timestamp": "April 28-30, 2024",
+        "description": "Indulge in a grand Renaissance banquet complete with period music, dance, and a costume ball set in a beautifully recreated historical setting.",
+        "profile_pic": "https://mgofmfewguhdxnissjvz.supabase.co/storage/v1/object/public/profile-pics/RevelryBanquet.png?t=2024-01-16T02%3A24%3A36.366Z"
+    },
+    {
+        "eventName": "Heroes & Villains Costume Parade",
+        "location": "Phoenix, Arizona",
+        "timestamp": "November 12-14, 2024",
+        "description": "A celebration of pop culture's most beloved heroes and villains. Features include a grand parade, interactive workshops, and celebrity meet-and-greets.",
+        "profile_pic": "https://mgofmfewguhdxnissjvz.supabase.co/storage/v1/object/public/profile-pics/HeroVillan.png?t=2024-01-16T02%3A24%3A25.826Z"
+    },
+    {
+        "eventName": "Time Travelers’ Symposium",
+        "location": "Boston, Massachusetts",
+        "timestamp": "August 16-18, 2024",
+        "description": "A unique event for fans of all things time travel, from steampunk to sci-fi. Enjoy themed entertainment, panel discussions, and a costume contest.",
+        "profile_pic": "https://mgofmfewguhdxnissjvz.supabase.co/storage/v1/object/public/profile-pics/TimeTravels.png?t=2024-01-16T02%3A23%3A57.091Z"
+    }]
