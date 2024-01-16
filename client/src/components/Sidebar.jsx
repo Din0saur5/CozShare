@@ -22,8 +22,8 @@ const Sidebar = ({userData, setUserData }) => {
         })
         .then(response => {
             if (response.ok) {
-                setUserData(null)
                 navigate("/")
+                setUserData(null)
                 
             } else {
                 // Handle logout failure (e.g., show error message)
