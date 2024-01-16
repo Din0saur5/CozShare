@@ -80,10 +80,12 @@ const Sidebar = ({userData, setUserData }) => {
         const res = await fetch(`${server}/users/${id}`, config);
         if (res.ok) {
           setErrors([]);
+          
         } else {
           const messages = await res.json();
           setErrors(messages.errors);
           console.log(messages)
+          setUserData(messages)
         }
       }
       
