@@ -26,7 +26,7 @@ const validationSchema = Yup.object({
     .oneOf([Yup.ref('password'), null], 'Passwords must match')
 });
 
-const SignupForm = () => {
+const SignupForm = ({setUserData}) => {
   const server = import.meta.env.VITE_URL
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false) 
@@ -74,9 +74,17 @@ const SignupForm = () => {
       credentials: 'include' // if you're handling sessions
     })
     .then(response =>{ if(response.ok){
-      navigate('/profile')
-      navigate('/profile')
-    }})
+      return response.json()
+        
+    } else{
+      throw new Error("HTTP error " + response.status)
+    }
+    })
+    .then(data=>{
+      setUserData(data)
+      navigate('/dashboard')
+     
+    })
     
       
     
