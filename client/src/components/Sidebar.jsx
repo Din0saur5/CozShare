@@ -86,6 +86,7 @@ const Sidebar = ({userData, setUserData }) => {
           setErrors(messages.errors);
           console.log(messages)
           setUserData(messages)
+          setCpCurrent(messages.catchphrase)
         }
       }
       
