@@ -3,7 +3,7 @@ from flask import Flask, request, session, render_template, make_response
 from flask_restful import Resource
 from config import app, db, api
 from models import User, Post, Comment, Event, Members
-from sqlalchemy import and_, text
+from sqlalchemy import and_, text, or_
 from sqlalchemy.exc import IntegrityError
 import uuid
 import random
@@ -205,12 +205,19 @@ class GetFeed(Resource):
   
     limit = request.args.get('limit', 10, type=int)
     offset = request.args.get('offset', 0, type=int)
-
-    posts = Post.query.filter(Post.user_id.in_(following_list)) \
-                      .order_by(Post.created.desc()) \
-                      .limit(limit) \
-                      .offset(offset) \
-                      .all()
+    eventIDs = [event.id for event in user.events]
+    posts = Post.query\
+            .filter(
+                or_(
+                    Post.event_id.is_(None),
+                    Post.event_id.in_(eventIDs)
+                ),
+                Post.user_id.in_(following_list)
+            )\
+            .order_by(Post.created.desc()) \
+            .limit(limit) \
+            .offset(offset) \
+            .all()
 
     
     posts_data = [post.to_dict() for post in posts]  
