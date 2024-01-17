@@ -67,6 +67,7 @@ const AccountSettings = () => {
           } else if (profile_pic) {
               
               console.log('Image URL:', profile_pic);
+              await updateProfile('profile_pic', profile_pic)
           } else {
               console.log('No image selected or URL provided');
           }
