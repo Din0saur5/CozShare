@@ -79,8 +79,36 @@ const handleSendMessage = async (message) => {
       }
 }
 
-useEffect(() => {
-    // Fetch initial messages
+// useEffect(() => {
+//     // Fetch initial messages
+//     const fetchMessages = async () => {
+//       let { data: messages, error } = await supabase
+//         .from('messages')
+//         .select('*')
+//         .eq('event_id', event.id);
+
+//       if (error) {
+//         console.error('Error fetching messages', error);
+//       } else {
+//         setMessages(messages);
+        
+//       }
+//     };
+
+//     fetchMessages();
+// }, [event.id, channel])
+
+useEffect(() => {  
+  const channel = supabase.channel(event.id) 
+    channel 
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'messages' }, payload => {
+        if (payload.new && payload.new.event_id === event.id) {
+          console.log('New message for event:', payload.new);
+          setMessages(prevMessages => [...prevMessages, payload.new]);
+        }
+      })
+      .subscribe();
+      // Fetch initial messages
     const fetchMessages = async () => {
       let { data: messages, error } = await supabase
         .from('messages')
@@ -96,23 +124,12 @@ useEffect(() => {
     };
 
     fetchMessages();
-
-    // Subscribe to changes
-    channel 
-      .on('postgres_changes', { event: '*', schema: 'public', table: 'messages' }, payload => {
-        if (payload.new && payload.new.event_id === event.id) {
-          console.log('New message for event:', payload.new);
-          setMessages(prevMessages => [...prevMessages, payload.new]);
-        }
-      })
-      .subscribe();
-
     // Clean up
-    return () => {
-      supabase.removeChannel(channel);
+    return ()=>{
+      supabase.removeChannel(event.id);
+    } 
       
-  }}, [event.id, channel])
-
+}, [event.id])
   
 
 

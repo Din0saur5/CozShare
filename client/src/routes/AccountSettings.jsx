@@ -1,11 +1,12 @@
 import { useState } from 'react';
 import Sidebar from '../components/Sidebar';
-import { useNavigate, useOutletContext } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import supabase from '../components/supabaseClient';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import PasswordUpdateForm from '../components/PasswordUpdateForm';
 import Toast from '../components/Toast';
+import { useUserContext } from '../components/UserContext';
 
 
 async function uploadFile(file) {
@@ -23,9 +24,9 @@ async function uploadFile(file) {
 
 
 const AccountSettings = () => {
-    const [userData, setUserData] = useOutletContext();
-    const [userDataO, setUserDataO] = useState(userData);
-    const [profile_pic, setProfile_pic] = useState(userDataO.profile_pic);
+    const {userData, setUserData} = useUserContext()
+   
+    const [profile_pic, setProfile_pic] = useState(userData.profile_pic);
     const [imageFile, setImageFile] = useState(null);
     // eslint-disable-next-line no-unused-vars
     const [errors, setErrors] = useState('')
@@ -66,6 +67,7 @@ const AccountSettings = () => {
           } else if (profile_pic) {
               
               console.log('Image URL:', profile_pic);
+              await updateProfile('profile_pic', profile_pic)
           } else {
               console.log('No image selected or URL provided');
           }
@@ -89,11 +91,11 @@ const AccountSettings = () => {
       },
       body: JSON.stringify(updateData),
     };
-    const res = await fetch(`${server}/users/${userDataO.id}`, config);
+    const res = await fetch(`${server}/users/${userData.id}`, config);
     if (res.ok) {
       setErrors([]);
       const data = await res.json();
-      setUserDataO(data)
+      setUserData(data)
     } else {
       const messages = await res.json();
       setErrors(messages.errors);
@@ -103,7 +105,7 @@ const AccountSettings = () => {
   }
   const formik = useFormik({
     initialValues: {
-        email: userDataO.email || ''
+        email: userData.email || ''
     },
     validationSchema: Yup.object({
         email: Yup.string().email('Invalid email address').required('Required'),
@@ -114,7 +116,7 @@ const AccountSettings = () => {
            
             console.log('Updating email to:', values.email);
           
-            setUserDataO({ ...userDataO, email: values.email });
+            setUserData({ ...userData, email: values.email });
             
         } catch (error) {
             console.error('Error updating email:', error);
@@ -178,7 +180,7 @@ const AccountSettings = () => {
     return (
         <> 
             <div className='flex flex-row bg-primary'>
-                <Sidebar userData={userDataO} setUserData={setUserDataO} /> 
+                <Sidebar userData={userData} setUserData={setUserData} /> 
                 <div className='lg:ml-80 mt-16 min-h-screen h-full w-full lg:w-bg bg-primary sm:bg-base-200'>
                     <div className='ml-4 mr-4'>
             

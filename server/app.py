@@ -3,7 +3,7 @@ from flask import Flask, request, session, render_template, make_response
 from flask_restful import Resource
 from config import app, db, api
 from models import User, Post, Comment, Event, Members
-from sqlalchemy import and_, text
+from sqlalchemy import and_, text, or_
 from sqlalchemy.exc import IntegrityError
 import uuid
 import random
@@ -11,15 +11,17 @@ import random
 def generate_random_hex_color():
     # Generates a random hex color
             return ''.join(random.choices('0123456789ABCDEF', k=6))
-@app.route('/')
-@app.route('/<int:id>')
-def index(id=0):
+@app.route('/', defaults={'path': ''})
+@app.route('/<path:path>')
+def catch_all(path):
     return render_template("index.html")
+
 
 @app.before_request
 def check_if_logged_in():
     if not session.get('user_id') and request.endpoint in {'/signup','/login','/check_session','/check_user'}:
         return {'error': 'Unauthorized'}, 401
+
 
 class AllUsers(Resource):
   def get(self):
@@ -45,6 +47,7 @@ class Signup(Resource):
             db.session.commit()
             session['user_id'] = new_user.id
             return make_response(new_user.to_dict(), 201)
+            return make_response(new_user.to_dict(), 201)
         except IntegrityError:
             return {'error': '422 Unprocessable Entity'}, 422
 
@@ -67,7 +70,7 @@ class CheckSession(Resource):
     user = User.query.filter(User.id == session.get('user_id')).first()
     if user:
         return make_response(user.to_dict(), 200)
-    return make_response({'error': 'Unauthorized'}, 401)
+    return {'error': 'Unauthorized'}, 401
 
 class CheckDisplayName(Resource):
     def get(self, display_name):
@@ -203,12 +206,19 @@ class GetFeed(Resource):
   
     limit = request.args.get('limit', 10, type=int)
     offset = request.args.get('offset', 0, type=int)
-
-    posts = Post.query.filter(Post.user_id.in_(following_list)) \
-                      .order_by(Post.created.desc()) \
-                      .limit(limit) \
-                      .offset(offset) \
-                      .all()
+    eventIDs = [event.id for event in user.events]
+    posts = Post.query\
+            .filter(
+                or_(
+                    Post.event_id.is_(None),
+                    Post.event_id.in_(eventIDs)
+                ),
+                Post.user_id.in_(following_list)
+            )\
+            .order_by(Post.created.desc()) \
+            .limit(limit) \
+            .offset(offset) \
+            .all()
 
     
     posts_data = [post.to_dict() for post in posts]  

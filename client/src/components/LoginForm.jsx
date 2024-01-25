@@ -1,3 +1,5 @@
+/* eslint-disable react/prop-types */
+/* eslint-disable no-unused-vars */
 
 import { Formik, Form, Field } from 'formik';
 import * as Yup from 'yup';
@@ -32,13 +34,12 @@ const validationSchema = Yup.object({
     ),
 });
 
-const LoginForm = () => {
+const LoginForm = ({setUserData}) => {
   const server = import.meta.env.VITE_URL
   const navigate = useNavigate()
   const [isLoading, setIsLoading] = useState(false)
 
-
-    const handleSubmit = (values, { setSubmitting }) => {
+    const handleSubmit = async (values, { setSubmitting, setFieldError }) => {
       setIsLoading(true)
       const url = `${server}/login`; 
   
@@ -54,19 +55,26 @@ const LoginForm = () => {
         credentials: 'include' 
       })
       .then(response => { if(response.ok){
-       navigate('/dashboard')
-       navigate('/dashboard') 
+        return response.json()
+         
         } else{
           throw new Error("HTTP error " + response.status)
         }
       })
+      .then((data)=>{
+        console.log('line 64 login form', data)
+        setUserData(data)
+        navigate('/dashboard')
+      })
       .catch((error) => {
         console.error('Login Error:', error);
+        alert("Invalid Login Credentials")
         
       })
       .finally(() => {
         setSubmitting(false);
         setIsLoading(false)
+     
       });
     };
   
@@ -108,7 +116,6 @@ const LoginForm = () => {
               className={`mt-1 block w-full ${errors.password && touched.password ? 'outline-red-500' : 'outline-green-500'}`}
             />
           </div>
-
           {isLoading? (
             <button className="btn rounded mt-4 px-4 py-2">
             <span className="loading loading-infinity loading-lg"></span>
@@ -119,7 +126,6 @@ const LoginForm = () => {
             Login
           </button>)
           }
-
         </Form>
       )}
     </Formik>

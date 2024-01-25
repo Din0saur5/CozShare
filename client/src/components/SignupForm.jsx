@@ -1,5 +1,6 @@
+/* eslint-disable react/prop-types */
 
-import { Formik, Form, Field, ErrorMessage } from 'formik';
+import { Formik, Form, Field } from 'formik';
 import * as Yup from 'yup';
 import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
@@ -26,7 +27,7 @@ const validationSchema = Yup.object({
     .oneOf([Yup.ref('password'), null], 'Passwords must match')
 });
 
-const SignupForm = () => {
+const SignupForm = ({setUserData}) => {
   const server = import.meta.env.VITE_URL
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false) 
@@ -65,7 +66,7 @@ const SignupForm = () => {
 
     };
   
-    return fetch(url, {
+    fetch(url, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -74,13 +75,23 @@ const SignupForm = () => {
       credentials: 'include' // if you're handling sessions
     })
     .then(response =>{ if(response.ok){
+      return response.json()
+        
+    } else{
+      throw new Error("HTTP error " + response.status)
+    }
+    })
+    .then(data=>{
+      setUserData(data)
       navigate('/dashboard')
-    }})
+     
+    })
     
       
     
     .catch((error) => {
       console.error('Error:', error);
+      location.reload()
     });
   }
 
@@ -102,7 +113,7 @@ const SignupForm = () => {
           const displayNameExists = await checkDisplayNameExists(values.displayName);
           if (displayNameExists) {
             setFieldError('displayName', 'Display name already taken');
-            return;
+            throw new Error("Display Name Taken")
           }else{
             signup(values.email, values.displayName, values.password)
           }
@@ -129,7 +140,7 @@ const SignupForm = () => {
               type="email"
               className={`mt-1 block w-full ${errors.email && touched.email ? 'outline-red-500' : 'outline-green-500'}`}
             />
-              <ErrorMessage name="email" component="div" className="text-red-500" />
+              {/* <ErrorMessage name="email" component="div" className="text-red-500" /> */}
           </div>
 
           <div>
@@ -144,7 +155,7 @@ const SignupForm = () => {
               type="text"
               className={`mt-1 block w-full ${errors.displayName && touched.displayName ? 'outline-red-500' : 'outline-green-500'}`}
             />
-             <ErrorMessage name="displayName" component="div" className="text-red-500" />
+             {/* <ErrorMessage name="displayName" component="div" className="text-red-500" /> */}
           </div>
 
           <div>
@@ -159,7 +170,7 @@ const SignupForm = () => {
               type="password"
               className={`mt-1 block w-full ${errors.password && touched.password ? 'outline-red-500' : 'outline-green-500'}`}
             />
-            <ErrorMessage name="password" component="div" className="text-red-500" />
+            {/* <ErrorMessage name="password" component="div" className="text-red-500" /> */}
           </div>
 
           <div>
@@ -174,20 +185,19 @@ const SignupForm = () => {
               type="password"
               className={`mt-1 block w-full ${errors.confirmPassword && touched.confirmPassword ? 'outline-red-500' : 'outline-green-500'}`}
             /> 
-            <ErrorMessage name="confirmPassword" component="div" className="text-red-500" />
+            {/* <ErrorMessage name="confirmPassword" component="div" className="text-red-500" /> */}
           </div>
 
-          { isLoading? (
+         { isLoading? (
           <button className="btn rounded mt-4 px-4 py-2">
             <span className="loading loading-infinity loading-lg"></span>
             loading
           </button>
          ):
-         ( <button type="submit" className="mt-4 px-4 py-2 bg-blue-500 text-white rounded">
+         ( <button type="submit" className="mt-4 px-4 py-2 bg-blue-500 text-white rounded shadow-inner shadow-white">
             Sign Up
           </button>
           )}
-
         </Form>
       )}
     </Formik>
