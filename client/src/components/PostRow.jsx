@@ -3,7 +3,9 @@
 import { GrClose } from "react-icons/gr";
 import CommentTable from "./CommentTable";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 const PostRow = ({currentUser, post, list, setList}) => {
+  const navigate = useNavigate()
   const [commentsOpen, setCommentsOpen] = useState(false)
 
   function extractImageName(url) {
@@ -98,7 +100,7 @@ const lightboxMedia = () => {
                               </div> )
                   })}
           </div>
-          <div className="flex justify-center w-full py-2 gap-2">
+          <div className="flex justify-center w-full py-2 gap-2"> 
               { post.media.map((img, index)=>{
                       return <a key={extractImageName(img)} href={`#${extractImageName(img)}modal`} className="btn btn-xs">{index+1}</a>
                   })}
@@ -128,7 +130,7 @@ const lightboxMedia = () => {
   return (
     <>
     <div className="card card-compact mt-4 sm:w-96 bg-base-100 shadow-xl">
-        <div className='flex flex-row bg-primary w-full py-2 rounded-t-xl'>
+        <div onClick={()=>{navigate(`/profile/${post.user_id}`)}} className='cursor-pointer flex flex-row bg-primary w-full py-2 rounded-t-xl'>
         <div className="avatar hover:bg-transparent ml-4">
         <div className="w-8 mask mask-hexagon hover:bg-transparent">
             <img src={post.user.profile_pic} />

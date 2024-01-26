@@ -30,6 +30,7 @@ const AccountSettings = () => {
     const [imageFile, setImageFile] = useState(null);
     // eslint-disable-next-line no-unused-vars
     const [errors, setErrors] = useState('')
+    const [publicUser, setPublic] = useState(userData.public_profile)
     const [showToast, setShowToast] = useState(false);
     const [toastMessage, setToastMessage] = useState('');
     const navigate = useNavigate()
@@ -173,7 +174,18 @@ const AccountSettings = () => {
                    }
     };
 
-
+    const handlePublicStatus = () => {
+        console.log(publicUser)
+        updateProfile('public_profile', publicUser)
+            .then(() => {
+                setPublic(!publicUser);
+            })
+            .catch(error => {
+                console.error('Error updating profile:', error);
+                // Handle the error appropriately
+                // For example, you might want to show a notification to the user
+            });
+    };
 
       
 
@@ -221,6 +233,25 @@ const AccountSettings = () => {
                               ) : null}
                       </form>
                       <PasswordUpdateForm setShowToast={setShowToast} setToastMessage={setToastMessage}/>
+                      
+                      <label className="relative inline-flex items-center cursor-pointer">
+    <input 
+        onClick={() => handlePublicStatus()} 
+        type="checkbox" 
+        checked={publicUser}
+        className="sr-only peer"
+        readOnly  // Added to make the input controlled
+    />
+
+    {/* Toggle graphic */}
+    <div className="w-11 h-6 bg-gray-500 rounded-full peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-blue-300 peer  after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all  peer-checked:after:translate-x-full peer-checked:after:left-0 peer-checked:after:border-white peer-checked:bg-primary"></div>
+
+    <div className="tooltip tooltip-info ml-12" data-tip="If your profile is public your profile's posts could appear on popular posts, otherwise your posts can only be seen by followers.">
+        <span className="ms-3 text-sm font-medium">Public Profile: {publicUser ? "ON" : "OFF"}</span>
+    </div>
+</label>
+
+
                       <div className="divider divider-error">Danger Zone</div>
                       <div className='flex flex-row-reverse'>
                         <button onClick={handleDeleteAccount} className=" mt-12 mb-24 sm:mb-12 btn btn-error">

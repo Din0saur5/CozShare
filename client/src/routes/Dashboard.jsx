@@ -1,88 +1,68 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable react-hooks/rules-of-hooks */
-import  { useCallback,  useEffect, useState } from 'react'
-
+import  { useState } from 'react'
 import Sidebar from '../components/Sidebar'
-import AOS from 'aos';
 import { useUserContext } from '../components/UserContext';
-import PostRow from '../components/PostRow';
+
+import ExploreLayout from '../components/ExploreLayout';
 const Dashboard = () => {
   //  const navigate = useNavigate()
    const {userData, setUserData} = useUserContext()
-  console.log(userData)
-  const [posts, setPosts] = useState([]);
-  const [isFetching, setIsFetching] = useState(false);
-  const [hasMorePosts, setHasMorePosts] = useState(true);
-  
-  
-
-    const fetchPosts = async (limit, offset) => {
-      const server = import.meta.env.VITE_URL;
-  
-      setIsFetching(true);
-      try {
-        const response = await fetch(`${server}/feed/${userData.id}?limit=${limit}&offset=${offset}`);
-        if (!response.ok) {
-          throw new Error(`HTTP error! Status: ${response.status}`);
-        }
-        const data = await response.json();
-        setPosts(prevPosts => [...prevPosts, ...data]);
-  
-        setHasMorePosts(data.length === limit);
-      } catch (error) {
-        console.error('Error fetching posts:', error);
-      } finally {
-        setIsFetching(false);
-      }
-    };
-  console.log(posts)
-    useEffect(() => {
-      fetchPosts(4, 0);
-    }, []);
-  
-  
-
-    useEffect(() => {
-      AOS.init({ duration: 1000, once: true });
-      
-      
-
-    }, []);
-  
-    const loadMoreOnScroll = useCallback(() => {
-      if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 100 && hasMorePosts && !isFetching) {
-        fetchPosts(6, posts.length);
-      }
-    }, [posts.length, hasMorePosts, isFetching]);
-  
-    useEffect(() => {
-      window.addEventListener('scroll', loadMoreOnScroll);
-      return () => window.removeEventListener('scroll', loadMoreOnScroll);
-    }, [loadMoreOnScroll]);
-  
-
+   let newUser = 'Popular Posts'
+   if(userData.following && userData.following.length>0){
+       newUser = 'Following Feed'
+   }
+   const [activeTab, setActiveTab] = useState(newUser); 
   return (
     <>
-        
-      <div className='flex flex-row bg-base-200'>
-        {userData &&(
-          <Sidebar userData={userData} setUserData={setUserData}  />
-        )}
+    <div className='flex flex-row bg-base-200'>
+    <Sidebar userData={userData} setUserData={setUserData}  /> 
+    <div className=' lg:ml-80 z-5 lg:z-10 h-full w-full lg:w-bg bg-base-200'>
+     <div className='w-full h-1/5 lg:h-1/4 flex flex-row align-baseline bg-base-200'>
+    <div className=' -mt-10 lg:-mt-5'>
+     
       
-        <div  className='lg:ml-80 mt-16 min-h-screen h-full w-full lg:w-bg bg-base-200'>
-          <div className='ml-4 mr-4'>
-            <div  className='grid-fix grid md:grid-cols-2 lg:grid-cols-1  xl:grid-cols-2 2xl:grid-cols-3 overflow-x-hidden'>
-              {posts? (posts.map(post=>{
-                  return <PostRow  key={post.id} post={post} currentUser={userData.id} list={posts} setList={setPosts}/>
-              })
-                ):<small>no posts</small> 
-                }
+        <div className='text-xl bold mb-2 ml-16 lg:ml-20' ></div>
+    </div>
+    <div className="font-medium flex align-center flex-col mt-12 justify-center ">
+        
+        
+    </div>
+     </div>
+     <div className="flex flex-col">
+        
+            
+        
+      <div className="relative right-0 flex flex-row-reverse space-x-2 rounded-t-xl w-full ">
+        {[ 'Popular Events', 'Popular Posts', 'Following Feed'].map((tab) => (
+            <label
+            key={tab}
+            className={`tab border border-third flex-initial bg-base-200 ml-2 mr-4  rounded-t-xl text-center px-4 cursor-pointer hover:underline ${activeTab === tab ? 'bg-primary text-base-100' : ''}`} >
+            <input
+              type="radio"
+              name="tabs"
+              value={tab}
+              checked={activeTab === tab}
+              onChange={() => setActiveTab(tab)}
+              className="sr-only " // Tailwind class for screen reader only
+              />
+            {tab}
+          </label>
+        ))}
+      
+    
+      </div>
+      <div className="relative rounded-tl-lg bg-base-300 p-4 mx-4 h-full min-h-screen border border-third rounded-b-lg">
+        
 
-            </div>
-          </div>
+          <ExploreLayout userData={userData} activeTab={activeTab}/>
         </div>
       </div>
-    </>
+  
+     
+    </div>
+    </div>
+      </>
   )
 
 }
