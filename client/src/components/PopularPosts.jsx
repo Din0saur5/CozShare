@@ -1,9 +1,9 @@
-/* eslint-disable react/prop-types */
 import  { useCallback, useEffect, useState } from 'react'
 import AOS from 'aos';
 import PostRow from './PostRow';
 
-const Feed = ({userData}) => {
+// eslint-disable-next-line react/prop-types
+const PopularPosts = ({userData}) => {
     const [posts, setPosts] = useState([]);
     const [isFetching, setIsFetching] = useState(false);
     const [hasMorePosts, setHasMorePosts] = useState(true);
@@ -13,11 +13,12 @@ const Feed = ({userData}) => {
    
        setIsFetching(true);
        try {
-         const response = await fetch(`${server}/feed/${userData.id}?limit=${limit}&offset=${offset}`);
+         const response = await fetch(`${server}/most-commented-posts?limit=${limit}&offset=${offset}`);
          if (!response.ok) {
            throw new Error(`HTTP error! Status: ${response.status}`);
          }
          const data = await response.json();
+         console.log(data)
          setPosts(prevPosts => [...prevPosts, ...data]);
    
          setHasMorePosts(data.length === limit);
@@ -52,20 +53,21 @@ const Feed = ({userData}) => {
       }, [loadMoreOnScroll]);
   return (
     <>
+      
           <div className='ml-4 mr-4'>
             <div  className='grid-fix grid md:grid-cols-2 lg:grid-cols-1  xl:grid-cols-2 2xl:grid-cols-3 overflow-x-hidden'>
               {posts? (posts.map(post=>{
                   return <PostRow  key={post.id} post={post} currentUser={userData.id} list={posts} setList={setPosts}/>
               })
-                ):(<></>)
+                ):<small>no posts</small>
                 }
+
             </div>
-               {posts.length > 0? (<></>):( <div style={{textShadow: "0 0 15px #a991f7 , 0 0 15px #fff "}} className=" divider divider-secondary items-center ">no posts, try following more people!</div>)}
           </div>
-        
+    
       
     </>
   )
 }
 
-export default Feed
+export default PopularPosts

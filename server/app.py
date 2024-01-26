@@ -5,6 +5,7 @@ from config import app, db, api
 from models import User, Post, Comment, Event, Members
 from sqlalchemy import and_, text, or_
 from sqlalchemy.exc import IntegrityError
+from sqlalchemy.sql import func
 import uuid
 import random
 
@@ -110,7 +111,7 @@ class UserById(Resource):
     if u:
         try:
             # Assuming you have a list of allowed attributes to update
-            allowed_attrs = ['display_name', 'email', 'bio', 'followers', 'following', 'catchphrase','profile_pic' ]  # example attributes
+            allowed_attrs = ['display_name', 'email', 'bio', 'followers', 'following', 'catchphrase','profile_pic', 'public_profile' ]  # example attributes
             for attr in request.json:
                 if attr in allowed_attrs:
                     setattr(u, attr, request.json.get(attr))
@@ -551,6 +552,57 @@ class CommentByPostId(Resource):
             db.session.rollback()
             return make_response({'error': 'Error adding comment'}, 500)
 
+          
+class PopularPosts(Resource):
+  def get(self):
+      offset = request.args.get('offset', default=0, type=int)
+      limit = request.args.get('limit', default=10, type=int)
+    
+      # Query to find posts with most comments
+      most_commented_posts = db.session.query(
+          Post,
+          func.count(Comment.id).label('comments_count')
+      ).join(User, Post.user_id == User.id  
+      ).filter(User.public_profile == True
+      ).outerjoin(Comment, Post.id == Comment.post_id
+      ).filter(Post.event_id == None
+      ).group_by(Post.id
+      ).order_by(func.count(Comment.id).desc()
+      ).offset(offset
+      ).limit(limit
+      ).all()
+      print(f"{most_commented_posts}")
+      # Assuming you have a method to serialize your Post objects, you can use it here.
+      posts_data = [post.to_dict(only=("media", "created" ,"post_type","user.profile_pic","user.display_name","user_id","caption","id")) for post, _ in most_commented_posts]
+
+      return make_response(posts_data, 200)
+
+class PopularEvents(Resource):
+    def get(self):
+        offset = request.args.get('offset', default=0, type=int)
+        limit = request.args.get('limit', default=10, type=int)
+
+        # Query to find events with most members
+        most_popular_events = db.session.query(
+            Event,
+            func.count(Members.id).label('members_count')
+        ).outerjoin(Members, Event.id == Members.event_id  # Adjust this join based on your actual relationship
+        ).group_by(Event.id
+        ).order_by(func.count(Members.id).desc()
+        ).offset(offset
+        ).limit(limit
+        ).all()
+
+        # Only serializing the Event data
+        events_data = [event.to_dict(only=('id', 'profile_pic','display_name', 'eventTime')) for event, _ in most_popular_events]  # Adjust serialization as needed
+
+        return make_response(events_data, 200)
+
+
+
+
+api.add_resource(PopularEvents, '/most-popular-events')
+api.add_resource(PopularPosts,'/most-commented-posts' )
 api.add_resource(CommentByPostId, '/comments/<uuid:id>')
 api.add_resource(DeletePost, '/post_delete/<uuid:id>')
 api.add_resource(GetPostsByEventId, '/posts_by_event/<uuid:id>')
