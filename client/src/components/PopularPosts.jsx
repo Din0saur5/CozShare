@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import  { useCallback, useEffect, useState } from 'react'
 import AOS from 'aos';
 import PostRow from './PostRow';

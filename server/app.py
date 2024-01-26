@@ -598,8 +598,8 @@ class PopularEvents(Resource):
 
 
 
-api.add_resource(PopularEvents, 'api/most-popular-events')
-api.add_resource(PopularPosts,'api/most-commented-posts' )
+api.add_resource(PopularEvents, '/api/most-popular-events')
+api.add_resource(PopularPosts,'/api/most-commented-posts' )
 api.add_resource(CommentByPostId, '/api/comments/<uuid:id>')
 api.add_resource(DeletePost, '/api/post_delete/<uuid:id>')
 api.add_resource(GetPostsByEventId, '/api/posts_by_event/<uuid:id>')
