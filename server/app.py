@@ -3,7 +3,7 @@ from flask import Flask, request, session, render_template, make_response
 from flask_restful import Resource
 from config import app, db, api
 from models import User, Post, Comment, Event, Members
-from sqlalchemy import and_, text
+from sqlalchemy import and_, text, or_
 from sqlalchemy.exc import IntegrityError
 import uuid
 import random
@@ -11,15 +11,17 @@ import random
 def generate_random_hex_color():
     # Generates a random hex color
             return ''.join(random.choices('0123456789ABCDEF', k=6))
-@app.route('/')
-@app.route('/<int:id>')
-def index(id=0):
+@app.route('/', defaults={'path': ''})
+@app.route('/<path:path>')
+def catch_all(path):
     return render_template("index.html")
+
 
 @app.before_request
 def check_if_logged_in():
-    if not session.get('user_id') and request.endpoint in {'/users',}:
-        return {'error': 'Unauthorized blah'}, 401
+    if not session.get('user_id') and request.endpoint in {'/signup','/login','/check_session','/check_user'}:
+        return {'error': 'Unauthorized'}, 401
+
 
 class AllUsers(Resource):
   def get(self):
@@ -44,7 +46,7 @@ class Signup(Resource):
             db.session.add(new_user)
             db.session.commit()
             session['user_id'] = new_user.id
-            return new_user.to_dict(), 201
+            return make_response(new_user.to_dict(), 201)
         except IntegrityError:
             return {'error': '422 Unprocessable Entity'}, 422
 
@@ -58,7 +60,7 @@ class Login(Resource):
       if user.authenticate(password):
         session['user_id'] = user.id
         if session['user_id']:
-          return user.to_dict(), 200
+          return make_response(user.to_dict(), 200)
         return {'error': 'session could not be established'}, 400
       return {'error': "Unauthorized"}, 401
     return {'error': "User Not Found"}, 404
@@ -66,7 +68,7 @@ class CheckSession(Resource):
   def get(self):
     user = User.query.filter(User.id == session.get('user_id')).first()
     if user:
-        return user.to_dict(), 200
+        return make_response(user.to_dict(), 200)
     return {'error': 'Unauthorized'}, 401
 
 class CheckDisplayName(Resource):
@@ -203,12 +205,19 @@ class GetFeed(Resource):
   
     limit = request.args.get('limit', 10, type=int)
     offset = request.args.get('offset', 0, type=int)
-
-    posts = Post.query.filter(Post.user_id.in_(following_list)) \
-                      .order_by(Post.created.desc()) \
-                      .limit(limit) \
-                      .offset(offset) \
-                      .all()
+    eventIDs = [event.id for event in user.events]
+    posts = Post.query\
+            .filter(
+                or_(
+                    Post.event_id.is_(None),
+                    Post.event_id.in_(eventIDs)
+                ),
+                Post.user_id.in_(following_list)
+            )\
+            .order_by(Post.created.desc()) \
+            .limit(limit) \
+            .offset(offset) \
+            .all()
 
     
     posts_data = [post.to_dict() for post in posts]  
@@ -543,29 +552,29 @@ class CommentByPostId(Resource):
 
 api.add_resource(CommentByPostId, '/api/comments/<uuid:id>')
 api.add_resource(DeletePost, '/api/post_delete/<uuid:id>')
-api.add_resource(GetPostsByEventId, '/event/api/posts_by_event/<uuid:id>')
-api.add_resource(GetPostsByUserId, '/event/api/posts_by_user/<uuid:id>')
-api.add_resource(DeleteAccount, '/event/api/delete_account')    
-api.add_resource(UpdatePassword, '/event/api/update_password')    
-api.add_resource(DeleteMember, '/event/api/delete_member/<uuid:user_id>/<uuid:event_id>')
-api.add_resource(SearchResource, '/event/api/search/<string:search_type>')
-api.add_resource(MembersByEventId, '/event/api/members/<uuid:id>')    
-api.add_resource(GetGroupsByUserId, '/event/api/eventsByUser/<uuid:id>')
-api.add_resource(EventsById, '/event/api/events/<uuid:id>')
-api.add_resource(AllPost, '/event/api/posts')    
-api.add_resource(AllMembers, '/event/api/members')    
-api.add_resource(CreateEvent, '/event/api/events')
-api.add_resource(HandleFollows, '/event/api/handle_follows')
-api.add_resource(GetFeed, '/event/api/feed/<uuid:id>')  
-api.add_resource(GetFollows, '/event/api/follows/<uuid:id>')
-api.add_resource(GetFollowing, '/event/api/following/<uuid:id>')  
-api.add_resource(GetFollowers, '/event/api/followers/<uuid:id>')
-api.add_resource(UserById, '/event/api/users/<uuid:id>')
-api.add_resource(AllUsers, '/event/api/users', endpoint='users')
-api.add_resource(Signup, '/event/api/signup', endpoint='signup')
-api.add_resource(CheckDisplayName, '/event/api/check_user/<display_name>', endpoint='check_user')
-api.add_resource(CheckSession, '/event/api/check_session', endpoint='check_session')
-api.add_resource(Login, '/event/api/login', endpoint='login')
-api.add_resource(Logout, '/event/api/logout', endpoint='logout')
+api.add_resource(GetPostsByEventId, '/api/posts_by_event/<uuid:id>')
+api.add_resource(GetPostsByUserId, '/api/posts_by_user/<uuid:id>')
+api.add_resource(DeleteAccount, '/api/delete_account')    
+api.add_resource(UpdatePassword, '/api/update_password')    
+api.add_resource(DeleteMember, '/api/delete_member/<uuid:user_id>/<uuid:event_id>')
+api.add_resource(SearchResource, '/api/search/<string:search_type>')
+api.add_resource(MembersByEventId, '/api/members/<uuid:id>')    
+api.add_resource(GetGroupsByUserId, '/api/eventsByUser/<uuid:id>')
+api.add_resource(EventsById, '/api/events/<uuid:id>')
+api.add_resource(AllPost, '/api/posts')    
+api.add_resource(AllMembers, '/api/members')    
+api.add_resource(CreateEvent, '/api/events')
+api.add_resource(HandleFollows, '/api/handle_follows')
+api.add_resource(GetFeed, '/api/feed/<uuid:id>')  
+api.add_resource(GetFollows, '/api/follows/<uuid:id>')
+api.add_resource(GetFollowing, '/api/following/<uuid:id>')  
+api.add_resource(GetFollowers, '/api/followers/<uuid:id>')
+api.add_resource(UserById, '/api/users/<uuid:id>')
+api.add_resource(AllUsers, '/api/users', endpoint='users')
+api.add_resource(Signup, '/api/signup', endpoint='signup')
+api.add_resource(CheckDisplayName, '/api/check_user/<display_name>', endpoint='check_user')
+api.add_resource(CheckSession, '/api/check_session', endpoint='check_session')
+api.add_resource(Login, '/api/login', endpoint='login')
+api.add_resource(Logout, '/api/logout', endpoint='logout')
 if __name__ == '__main__':
   app.run()

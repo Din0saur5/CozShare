@@ -1,15 +1,17 @@
 import { useEffect, useState } from 'react'
 import Sidebar from '../components/Sidebar'
-import { useOutletContext, useParams } from 'react-router-dom'
+import { useParams } from 'react-router-dom'
 
 import ProfileLayout from '../components/ProfileLayout';
+import { useUserContext } from '../components/UserContext';
 const UserProfile = () => {
     // eslint-disable-next-line no-unused-vars
-    const [userData, setUserData] = useOutletContext() 
+    const {userData, setUserData} = useUserContext() 
+    console.log('line 10 userprofile',userData)
     let { id } = useParams(); 
     const server = import.meta.env.VITE_URL
     const [viewUserData, setViewUserData] = useState({})
-    const [userDataO, setUserDataO] = useState(userData) 
+
   useEffect(()=>{
     const config = {
       credentials: 'include',
@@ -20,11 +22,11 @@ const UserProfile = () => {
     fetch(`${server}/users/${id}`, config)
       .then(res=>res.json())
       .then(data=>{
-        console.log(data)
+        console.log("line 24 user profile: ",data)
         setViewUserData(data)
       })
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  },[]) 
+  },[id]) 
 
 
 
@@ -36,9 +38,9 @@ const UserProfile = () => {
 
     useEffect(()=>{
      
-      if(userDataO.id == viewUserData.id){
+      if(userData.id == viewUserData.id){
           setFollowStatus('currentUser')
-      } else if (viewUserData.followers &&  viewUserData.followers.includes(userDataO.id)){
+      } else if (viewUserData.followers &&  viewUserData.followers.includes(userData.id)){
           
           setFollowStatus(true)
       }
@@ -46,7 +48,7 @@ const UserProfile = () => {
           
           setFollowStatus(false)
       }
-  },[userDataO, id, viewUserData])
+  },[userData, id, viewUserData])
     
 
 
@@ -78,7 +80,6 @@ const UserProfile = () => {
           }
           setViewUserData(data.target);
           setUserData(data.user);
-          setUserDataO(data.user)
           return data;
       })
     }
@@ -89,7 +90,7 @@ const UserProfile = () => {
   return (
     <>
     <div className='flex flex-row bg-base-200'>
-    <Sidebar userData={userDataO} setUserData={setUserDataO}  /> 
+    <Sidebar userData={userData} setUserData={setUserData}  /> 
     <div className=' lg:ml-80 z-5 lg:z-10 h-full w-full lg:w-bg bg-base-200'>
      <div className='w-full h-1/5 lg:h-1/4 flex flex-row align-baseline bg-base-200'>
     <div className=' -mt-10 lg:-mt-5'>
@@ -150,7 +151,7 @@ const UserProfile = () => {
           :(<></>)
         }
 
-            <ProfileLayout activeTab={activeTab} userData={userDataO} setUserData={setUserDataO} viewedProfile={id}/>
+            <ProfileLayout activeTab={activeTab} userData={userData} setUserData={setUserData} viewedProfile={id}/>
         </div>
       </div>
   

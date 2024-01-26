@@ -1,9 +1,11 @@
+/* eslint-disable react/prop-types */
 import { useEffect, useState } from "react"
 import EventRow from "./EventRow"
 import UserRow from "./UserRow"
 
 const QueryTable = (props) => {
     const {query, tab, userData} = props
+    console.log("line 7 querytable: ", userData)
     const server = import.meta.env.VITE_URL
     const queryf = query.replace(/%/g, ' ')
     const [queryList, setQueryList] = useState([{}])

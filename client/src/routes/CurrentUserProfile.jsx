@@ -1,14 +1,13 @@
 /* eslint-disable no-unused-vars */
 import React, { useState } from 'react'
 import Sidebar from '../components/Sidebar'
-import { useOutletContext } from 'react-router-dom'
 import { FaPaintBrush } from "react-icons/fa";
 import ProfileLayout from '../components/ProfileLayout';
+import { useUserContext } from '../components/UserContext';
 const CurrentUserProfile = () => {
-    const [userData, setUserData] = useOutletContext() 
-    const [userDataO, setUserDataO] = useState(userData)
+    const {userData, setUserData} = useUserContext()
     const server = import.meta.env.VITE_URL
-    const {id, display_name, catchphrase, profile_pic, bio } = userDataO
+    const {id, display_name, catchphrase, profile_pic, bio } = userData
     const [bioCurrent, setBioCurrent] = useState(bio)
     const [showSubmitBio, setShowSubmitBio] = useState(false)
     const [errors, setErrors] = useState([]) 
@@ -58,7 +57,7 @@ const CurrentUserProfile = () => {
   return (
     <>
     <div className='flex flex-row bg-base-200'>
-    <Sidebar userData={userDataO} setUserData={setUserDataO}  /> 
+    <Sidebar userData={userData} setUserData={setUserData}  /> 
     <div className=' lg:ml-80 z-5 lg:z-10 h-full w-full lg:w-bg bg-third sm:bg-base-200'>
      <div className='w-full h-1/5 lg:h-1/4 flex flex-row align-baseline bg-base-200'>
     <div className=' -mt-12 lg:-mt-5'>
@@ -90,11 +89,11 @@ const CurrentUserProfile = () => {
         
             
         
-      <div className="relative right-0 flex flex-row-reverse space-x-2 rounded-t-xl w-full ">
+      <div className="relative right-0 flex flex-row-reverse space-x-1 sm:space-x-2 rounded-t-xl w-full ">
         {[ 'Inspiring', 'Inspired by', 'Events', 'Posts'].map((tab) => (
             <label
             key={tab}
-            className={`tab border border-third flex-initial bg-base-200 ml-2 mr-4  rounded-t-xl text-center px-4 cursor-pointer hover:underline ${activeTab === tab ? 'bg-primary text-base-100' : ''}`} >
+            className={`tab border border-third flex-initial bg-base-200 ml-2 mr-4 max-sm:text-xs rounded-t-xl text-center px-4 cursor-pointer hover:underline ${activeTab === tab ? 'bg-primary text-base-100' : ''}`} >
             <input
               type="radio"
               name="tabs"
@@ -110,7 +109,7 @@ const CurrentUserProfile = () => {
     
       </div>
       <div className="relative rounded-tl-lg bg-base-300 p-4 mx-4 h-full min-h-screen border border-third rounded-b-lg">
-            <ProfileLayout activeTab={activeTab} userData={userData} setUserData={setUserDataO} viewedProfile={id}/>
+            <ProfileLayout activeTab={activeTab} userData={userData} setUserData={setUserData} viewedProfile={id}/>
         </div>
       </div>
   
