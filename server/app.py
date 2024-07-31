@@ -76,8 +76,10 @@ class CheckDisplayName(Resource):
     def get(self, display_name):
         user = User.query.filter(User.display_name == display_name).first()
         if user:
+            print(user)
             return {}, 409
         else:
+            print('ok')
             return {}, 200
 
 class Logout(Resource):
